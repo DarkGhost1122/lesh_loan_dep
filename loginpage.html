@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Central Way Investments – Login</title>
+  <link rel="stylesheet" href="loginpage.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+
+  <div class="login-card">
+
+    <!-- Logo area -->
+    <div class="logo-area">
+      <!--
+        Replace the SVG below with your real logo:
+        <img src="logo.png" alt="Central Way Investments" />
+      -->
+      <svg width="160" height="100" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- C shape -->
+        <path d="M 44 20
+                 A 38 38 0 1 0 44 80
+                 L 44 70
+                 A 28 28 0 1 1 44 30
+                 Z"
+              fill="#2B3A5C"/>
+
+        <!-- Three diagonal bars (the /// part) -->
+        <rect x="72" y="18" width="10" height="64" rx="3"
+              transform="rotate(-15 77 50)"
+              fill="#2B3A5C"/>
+        <rect x="90" y="18" width="10" height="64" rx="3"
+              transform="rotate(-15 95 50)"
+              fill="#2B3A5C"/>
+        <rect x="108" y="18" width="10" height="64" rx="3"
+              transform="rotate(-15 113 50)"
+              fill="#2B3A5C"/>
+      </svg>
+
+      <!-- Company name text -->
+      <div class="company-name">
+        <span class="name-main">CENTRAL WAY</span>
+        <span class="name-sub">INVESTMENTS (PVT) LTD</span>
+      </div>
+    </div>
+
+    <!-- Sign In Now header -->
+    <div class="signin-header">SIGN IN NOW</div>
+
+    <!-- Form -->
+    <div class="form-area">
+      <div class="error-msg" id="errorMsg">Invalid username or password.</div>
+
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+        autocomplete="username"
+      />
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      />
+
+      <button class="btn-signin" onclick="handleLogin()">SIGN IN</button>
+    </div>
+
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════════════
+       MACS MF – Real backend login via Python Flask API
+       Backend URL is set in config.js
+    ══════════════════════════════════════════════════ */
+
+    function setLoading(isLoading) {
+      const btn = document.querySelector('.btn-signin');
+      btn.disabled = isLoading;
+      btn.textContent = isLoading ? 'SIGNING IN...' : 'SIGN IN';
+    }
+
+    function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (!username || !password) {
+        errorMsg.textContent = 'Please enter your username and password.';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      errorMsg.classList.remove('show');
+      setLoading(true);
+
+      fetch(`${API_BASE}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(r => r.json())
+      .then(data => {
+        setLoading(false);
+        if (data.success) {
+          /* Store JWT token and display name in sessionStorage */
+          sessionStorage.setItem('authToken',    data.token);
+          sessionStorage.setItem('loggedInUser', data.display_name);
+          sessionStorage.setItem('userRole',     data.role || 'user');
+          window.location.href = 'dashboard.html';
+        } else {
+          errorMsg.textContent = data.message || 'Invalid username or password.';
+          errorMsg.classList.add('show');
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        errorMsg.textContent = 'Cannot connect to server. Make sure the backend is running.';
+        errorMsg.classList.add('show');
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+
+</body>
+</html>

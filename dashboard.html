@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MACS MF – Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css"/>
+  <script src="config.js"></script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ══════════════════════════
+       SIDEBAR
+  ══════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Brand topbar inside sidebar -->
+    <div class="topbar">
+      <div class="brand">
+        <span class="brand-macs">MACS</span>
+        <span class="brand-space"></span>
+        <span class="brand-mf">MF</span>
+      </div>
+    </div>
+
+    <!-- ── Sidebar Menu ── -->
+    <nav class="sidebar-menu">
+
+      <!-- Dashboard -->
+      <div class="menu-row active" id="nav-dashboard" onclick="showPage('page-home', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Dashboard
+      </div>
+
+      <div class="divider-line"></div>
+
+      <!-- Accounts -->
+      <div class="menu-category" onclick="toggleMenu('sub-accounts', this)">
+        Accounts <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-accounts">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Account Overview')">Account Overview</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Account Statements')">Account Statements</div>
+      </div>
+
+      <!-- Admin -->
+      <div class="menu-category" onclick="toggleMenu('sub-admin', this)">
+        Admin <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-admin">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'System Settings')">System Settings</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Audit Log')">Audit Log</div>
+      </div>
+
+      <!-- Cashier -->
+      <div class="menu-category" onclick="toggleMenu('sub-cashier', this)">
+        Cashier <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-cashier">
+        <div class="submenu-item" onclick="showPage('page-disburse-loans', this)">Loan Disbursement</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Receipting')">Receipting</div>
+        <div class="submenu-item" onclick="showPage('page-group-payments', this)">Group Payment</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Collection')">Collection</div>
+      </div>
+
+      <!-- Contract -->
+      <div class="menu-category" onclick="toggleMenu('sub-contract', this)">
+        Contract <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-contract">
+        <div class="submenu-item" onclick="showPage('page-loan-overview', this)">Loan Overview</div>
+        <div class="submenu-item" onclick="showPage('page-print-agreement', this)">Print Agreement</div>
+        <div class="submenu-item" onclick="showPage('page-all-loans', this)">All Loans</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Balance')">Balance</div>
+        <div class="submenu-item" onclick="showPage('page-settle-loans', this)">Settle Loans</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Settlements')">Settlements</div>
+      </div>
+
+      <!-- Customer -->
+      <div class="menu-category" onclick="toggleMenu('sub-customer', this)">
+        Customer <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-customer">
+        <div class="submenu-item" onclick="showPage('page-new-client', this)">New Client</div>
+        <div class="submenu-item" onclick="showPage('page-client-search', this)">Client Search</div>
+        <div class="submenu-item" onclick="showPage('page-client-overview', this)">Client Overview</div>
+      </div>
+
+      <!-- User Creation -->
+      <div class="menu-category" onclick="toggleMenu('sub-usercreation', this)">
+        User Creation <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-usercreation">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Create User')">Create User</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Manage Users')">Manage Users</div>
+      </div>
+
+      <!-- Operation -->
+      <div class="menu-category" onclick="toggleMenu('sub-operation', this)">
+        Operation <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-operation">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Cash Request')">Cash Request</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Disbursement Sheet')">Disbursement Sheet</div>
+        <div class="submenu-item" onclick="toggleSubMenu('sub-op-reports')" style="display:flex;justify-content:space-between;">
+          <span>Reports</span><span style="font-size:10px;color:#777;">&#9654;</span>
+        </div>
+        <div class="sub-submenu" id="sub-op-reports">
+          <div class="sub-submenu-item" onclick="showPage('page-coming-soon', null, 'Loan List')">Loan List</div>
+          <div class="sub-submenu-item" onclick="showPage('page-coming-soon', null, 'Sub Officer Collection')">Sub Officer Collection</div>
+        </div>
+      </div>
+
+      <!-- CBO Management -->
+      <div class="menu-category" onclick="toggleMenu('sub-cbo', this)">
+        CBO Management <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-cbo">
+        <div class="submenu-item" onclick="showPage('page-cbo-attendance', this)">CBO Attendance</div>
+        <div class="submenu-item" onclick="showPage('page-cbo-group-management', this)">Group Management</div>
+        <div class="submenu-item" onclick="showPage('page-cbo-management', this)">CBO Management</div>
+        <div class="submenu-item" onclick="showPage('page-cbo-management', this)">Add Member to CBO</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Credit Officer Overview')">Credit Officer Overview</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'CBO Overview')">CBO Overview</div>
+      </div>
+
+      <!-- New Contract -->
+      <div class="menu-category" onclick="toggleMenu('sub-newcontract', this)">
+        New Contract <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-newcontract">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'New Micro Loan')">New Micro Loan</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Loan Interaction')">Loan Interaction</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'New Micro Express Loan')">New Micro Express Loan</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'New Business Loan')">New Business Loan</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'New Customer Loan')">New Customer Loan</div>
+      </div>
+
+      <!-- Reports -->
+      <div class="menu-category" onclick="toggleMenu('sub-reports', this)">
+        Reports <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-reports">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Collection Reports')">Collection Reports</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Not Paid Reports')">Not Paid Reports</div>
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Center Reports')">Center Reports</div>
+      </div>
+
+      <!-- Savings -->
+      <div class="menu-category" onclick="toggleMenu('sub-savings', this)">
+        Savings <span class="plus-icon">+</span>
+      </div>
+      <div class="submenu" id="sub-savings">
+        <div class="submenu-item" onclick="showPage('page-coming-soon', this, 'Savings')">Savings</div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </nav>
+
+  </aside><!-- /.sidebar -->
+
+  <!-- ══════════════════════════
+       RIGHT SIDE
+  ══════════════════════════ -->
+  <div class="page-wrapper" id="page-wrapper">
+
+    <!-- Top bar (right side) -->
+    <div class="full-topbar">
+
+      <!-- Hamburger always visible here so sidebar can be reopened -->
+      <button class="hamburger-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <button class="tb-icon-btn" title="Notes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span class="tb-badge grey">0</span>
+      </button>
+
+      <button class="tb-icon-btn" title="Tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9,11 12,14 22,4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span class="tb-badge blue">0</span>
+      </button>
+
+      <button class="tb-icon-btn" title="Alerts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="tb-badge orange">7</span>
+      </button>
+
+      <div class="tb-spacer"></div>
+
+      <!-- Username with dropdown -->
+      <div class="tb-username" id="tb-username-wrap" onclick="toggleUserMenu()">
+        <span id="display-username">...</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6,9 12,15 18,9"/>
+        </svg>
+        <!-- User dropdown -->
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="user-dropdown-item" onclick="handleLogout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16,17 21,12 16,7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
+          </div>
+        </div>
+      </div>
+
+      <select class="tb-lang">
+        <option value="en">English</option>
+        <option value="si">සිංහල</option>
+        <option value="ta">தமிழ்</option>
+      </select>
+
+    </div>
+
+    <!-- Main content -->
+    <main class="main-content" id="main-content">
+
+      <!-- ═══════════════════════════════════
+           PAGE: HOME (flame logo)
+      ═══════════════════════════════════ -->
+      <div id="page-home" class="page-section">
+        <div class="home-logo">
+          <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 4 C60 4 105 40 105 80 C105 120 88 148 60 158 C32 148 15 120 15 80 C15 40 60 4 60 4Z" fill="#5C2E0A" opacity="0.9"/>
+            <path d="M60 14 C60 14 102 48 100 84 C98 110 84 138 60 150 L56 98 C70 90 84 72 80 55 C76 42 60 14 60 14Z" fill="#7B3A10"/>
+            <path d="M60 34 C48 50 30 65 32 90 C34 112 46 134 60 150 C52 128 42 108 44 86 C46 66 58 52 66 36Z" fill="#D96918"/>
+            <path d="M60 52 C52 66 38 82 40 100 C42 116 52 134 60 150 C68 134 78 116 80 100 C82 82 68 66 60 52Z" fill="#E89020"/>
+            <path d="M60 72 C54 84 46 96 48 108 C50 118 56 134 60 150 C64 134 70 118 72 108 C74 96 66 84 60 72Z" fill="#F0B030"/>
+            <path d="M60 95 C57 102 54 112 55 122 C56 132 58 142 60 150 C62 142 64 132 65 122 C66 112 63 102 60 95Z" fill="#F8D060"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: LOAN DISBURSEMENT
+      ═══════════════════════════════════ -->
+      <div id="page-disburse-loans" class="page-section" style="display:none;">
+        <div class="page-title">Disburse Loans</div>
+
+        <!-- Search Criteria -->
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="sel-branch">
+                <option value="ANAMADUWA">ANAMADUWA</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Credit Officer</label>
+              <select id="sel-officer">
+                <option value="">-- All --</option>
+            </select>
+            </div>
+            <div class="criteria-field">
+              <label>CBO</label>
+              <select id="sel-cbo">
+                <option value="">-- All --</option>
+            </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="viewApprovals()">View Approvals</button>
+            <button class="btn btn-grey"  onclick="cancelApprovals()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Results table (hidden until View Approvals clicked) -->
+        <div id="disburse-results" class="results-section" style="display:none;">
+          <div class="results-title">Loans</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Loan No</th>
+                  <th>Amount</th>
+                  <th>Reg Date</th>
+                  <th>Client Name</th>
+                  <th>CBO</th>
+                  <th>Action</th>
+                  <th>Send Back</th>
+                </tr>
+              </thead>
+              <tbody id="disburse-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: GROUP COLLECTION (Group Payments)
+      ═══════════════════════════════════ -->
+      <div id="page-group-payments" class="page-section" style="display:none;">
+        <div class="page-title">Group Collection</div>
+
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="gp-branch">
+                <option value="">-- All --</option>
+                <option value="ANAMADUWA">ANAMADUWA</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Date</label>
+              <input type="date" id="gp-date" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:180px;"/>
+            </div>
+            <div class="criteria-field">
+              <label>Loan Type</label>
+              <select id="gp-loan-type">
+                <option value="Micro Finance">Micro Finance</option>
+                <option value="Business">Business</option>
+                <option value="Customer">Customer</option>
+                <option value="Micro Express">Micro Express</option>
+              </select>
+            </div>
+          </div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>CBO</label>
+              <select id="gp-cbo">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-section">
+          <div class="results-title">Payment Sheet</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Loan No</th>
+                  <th>Client Name</th>
+                  <th>CBO</th>
+                  <th>Amount Due</th>
+                  <th>Payment Date</th>
+                  <th>Collected By</th>
+                </tr>
+              </thead>
+              <tbody id="gp-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:16px;color:#888;">No payment data found.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: LOAN OVERVIEW
+      ═══════════════════════════════════ -->
+      <div id="page-loan-overview" class="page-section" style="display:none;">
+        <div class="page-title">Loan Overview</div>
+
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+
+          <!-- Row 1 -->
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="lo-branch">
+                <option value="">-- All --</option>
+                <option value="ANAMADUWA">ANAMADUWA</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Credit Officer</label>
+              <select id="lo-officer">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>CBD</label>
+              <select id="lo-cbo">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Loan Type</label>
+              <select id="lo-loan-type">
+                <option value="">-- All --</option>
+                <option value="Micro Finance">Micro Finance</option>
+                <option value="Business">Business</option>
+                <option value="Customer">Customer</option>
+                <option value="Micro Express">Micro Express</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Loan Status</label>
+              <select id="lo-status">
+                <option value="">-- All --</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Disbursed">Disbursed</option>
+                <option value="Active">Active</option>
+                <option value="Settled">Settled</option>
+                <option value="Sent Back">Sent Back</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Search By</label>
+              <select id="lo-search-by">
+                <option value="Loan ID">Loan ID</option>
+                <option value="Client Name">Client Name</option>
+                <option value="NIC">NIC</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Keyword</label>
+              <input type="text" id="lo-keyword" placeholder="" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:200px;"/>
+            </div>
+            <div class="criteria-field">
+              <label>Loan ID</label>
+              <input type="text" id="lo-loan-id" placeholder="" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:200px;" readonly/>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="selectLoan()">Select Loan</button>
+            <button class="btn btn-grey"  onclick="cancelLoan()">Cancel</button>
+          </div>
+        </div>
+
+        <div id="loan-overview-results" class="results-section" style="display:none;">
+          <div class="results-title">Loans</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Branch</th>
+                  <th>Loan No</th>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>Amount</th>
+                  <th>Loan Type</th>
+                  <th>Status</th>
+                  <th>Credit Officer</th>
+                  <th>Disbursement Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="lo-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: PRINT LOANS AGREEMENT
+      ═══════════════════════════════════ -->
+      <div id="page-print-agreement" class="page-section" style="display:none;">
+        <div class="page-title">Print Loans Agreement</div>
+
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="pa-branch">
+                <option value="ANAMADUWA">ANAMADUWA</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Credit Officer</label>
+              <select id="pa-officer">
+                <option value="">-- Select Credit Officer --</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="viewLoansForPrint()">View Loans</button>
+            <button class="btn btn-grey"  onclick="cancelPrint()">Cancel</button>
+          </div>
+        </div>
+
+        <div id="pa-results" class="results-section" style="display:none;">
+          <div class="results-title">Loans</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Loan No</th>
+                  <th>Client Name</th>
+                  <th>NIC</th>
+                  <th>Amount</th>
+                  <th>Reg Date</th>
+                  <th>Credit Officer</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="pa-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: ALL LOANS
+      ═══════════════════════════════════ -->
+      <div id="page-all-loans" class="page-section" style="display:none;">
+        <div class="page-title">All Loan</div>
+
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+
+          <!-- Row 1 -->
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="al-branch">
+                <option value="">-- All --</option>
+                <option value="ANAMADUWA">ANAMADUWA</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Credit Officer</label>
+              <select id="al-officer">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>CBD</label>
+              <select id="al-cbo">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Loan Type</label>
+              <select id="al-loan-type">
+                <option value="">-- All --</option>
+                <option value="Micro Finance">Micro Finance</option>
+                <option value="Business">Business</option>
+                <option value="Customer">Customer</option>
+                <option value="Micro Express">Micro Express</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Loan Status</label>
+              <select id="al-status">
+                <option value="">-- All --</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Disbursed">Disbursed</option>
+                <option value="Active">Active</option>
+                <option value="Settled">Settled</option>
+                <option value="Sent Back">Sent Back</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>From Date</label>
+              <input type="date" id="al-from-date" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:160px;"/>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>To Date</label>
+              <input type="date" id="al-to-date" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:160px;"/>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="selectAllLoans()">Select Loan</button>
+            <button class="btn btn-grey"  onclick="cancelAllLoans()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Results table -->
+        <div id="all-loans-results" class="results-section" style="display:none;">
+          <div class="results-title">Loans</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Branch</th>
+                  <th>Product</th>
+                  <th>Loan No</th>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>Loan Amount</th>
+                  <th>Credit Officer</th>
+                  <th>Disbursement Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="al-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: NEW CLIENT
+      ═══════════════════════════════════ -->
+      <div id="page-new-client" class="page-section" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div class="page-title" style="margin-bottom:0;">New Client</div>
+          <button class="help-btn" onclick="alert('Help documentation is not available for this feature yet.')"><span style="font-size:14px;">⚙</span> Help me.</button>
+        </div>
+
+        <div class="search-box">
+          <div class="search-heading">Details</div>
+          <form id="form-new-client" onsubmit="saveNewClient(event)">
+            <div class="form-grid-2col">
+              <!-- Left Column -->
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="form-row-aligned">
+                  <label>Title <span class="req-star">*</span></label>
+                  <select id="nc-title" required>
+                    <option value="">-- Select --</option>
+                    <option value="Mr">Mr</option>
+                    <option value="Mrs">Mrs</option>
+                    <option value="Miss">Miss</option>
+                    <option value="Rev">Rev</option>
+                  </select>
+                </div>
+                <div class="form-row-aligned">
+                  <label>NIC <span class="req-star">*</span></label>
+                  <input type="text" id="nc-nic" placeholder="Identification No here..." required />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Initials <span class="req-star">*</span></label>
+                  <input type="text" id="nc-initials" required />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Last Name Name <span class="req-star">*</span></label>
+                  <input type="text" id="nc-lastname" required />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Gender <span class="req-star">*</span></label>
+                  <select id="nc-gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-row-aligned">
+                  <label>Mobile No</label>
+                  <input type="text" id="nc-mobile" />
+                </div>
+                <div class="form-row-aligned">
+                  <label>House No</label>
+                  <input type="text" id="nc-houseno" />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Branch <span class="req-star">*</span></label>
+                  <select id="nc-branch" required>
+                    <option value="ANAMADUWA">ANAMADUWA</option>
+                    <option value="COLOMBO">COLOMBO</option>
+                    <option value="KANDY">KANDY</option>
+                    <option value="GALLE">GALLE</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="form-row-aligned">
+                  <label>Repeat NIC <span class="req-star">*</span></label>
+                  <input type="text" id="nc-repeat-nic" placeholder="Repeat Identification No here..." required />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Names Denoted By Initials</label>
+                  <input type="text" id="nc-names-initials" />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Date of Birth</label>
+                  <input type="date" id="nc-dob" />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Civil Status</label>
+                  <select id="nc-civilstatus">
+                    <option value="None">None</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                  </select>
+                </div>
+                <div class="form-row-aligned">
+                  <label>Land Phone No</label>
+                  <input type="text" id="nc-landphone" />
+                </div>
+                <div class="form-row-aligned">
+                  <label>Street Address</label>
+                  <input type="text" id="nc-streetaddress" />
+                </div>
+                <div class="form-row-aligned">
+                  <label>CBO</label>
+                  <select id="nc-cbo">
+                    <option value="">-- Select CBO --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row" style="margin-left: 154px;">
+              <button type="submit" class="btn btn-green">Save Client</button>
+              <button type="button" class="btn btn-grey" onclick="resetNewClientForm()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: CLIENT SEARCH
+      ═══════════════════════════════════ -->
+      <div id="page-client-search" class="page-section" style="display:none;">
+        <div class="page-title">All Clients</div>
+
+        <div class="results-section">
+          <div class="table-header-tools">
+            <div class="results-title">Client List</div>
+            <select class="select-tools" id="cs-tools" onchange="handleClientToolsChange()">
+              <option value="">Tools</option>
+              <option value="refresh">Refresh List</option>
+            </select>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Client Code</th>
+                  <th>Name</th>
+                  <th>NIC No</th>
+                  <th>Phone No</th>
+                  <th>Registered Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cs-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: CLIENT OVERVIEW
+      ═══════════════════════════════════ -->
+      <div id="page-client-overview" class="page-section" style="display:none;">
+        <!-- Search Criteria at top -->
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>NIC / Phone Number</label>
+              <input type="text" id="co-search-keyword" placeholder="NIC" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:200px;"/>
+            </div>
+            <div class="criteria-field">
+              <label>Client Name</label>
+              <input type="text" id="co-search-name" placeholder="" style="height:32px;border:1px solid #CCC;border-radius:3px;padding:0 8px;font-size:13px;min-width:200px;"/>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="searchClientForOverview()">Select Client</button>
+            <button class="btn btn-grey" onclick="clearClientOverview()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Details Box (visible only when client loaded) -->
+        <div id="co-details-box" class="client-overview-card" style="display:none;">
+          <input type="hidden" id="co-client-id" />
+          <div class="client-overview-layout">
+            <!-- Left Side: Profile Photo -->
+            <div class="client-photo-section">
+              <div class="client-photo-wrapper" id="co-photo-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div class="photo-actions">
+                <div class="file-input-wrapper">
+                  <button class="btn-file-select">Select file</button>
+                  <input type="file" id="co-photo-file" accept="image/*" onchange="previewProfilePhoto(event)" />
+                </div>
+                <button class="btn-apply-photo" onclick="uploadProfilePhoto()">Apply Profile image</button>
+                <div class="photo-notice">
+                  *Please click Apply Profile Image button after selecting the image
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Personal Info -->
+            <div class="personal-info-section">
+              <div class="personal-info-title">Personal Information</div>
+              <div class="info-grid-2col">
+                <div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Initials</div>
+                    <div class="info-value" id="co-info-initials"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Last Name</div>
+                    <div class="info-value" id="co-info-lastname"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Mobile</div>
+                    <div class="info-value" id="co-info-mobile"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Client Level</div>
+                    <div class="info-value" id="co-info-level">Level 0</div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Gender</div>
+                    <div class="info-value" id="co-info-gender"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">CBO</div>
+                    <div class="info-value" id="co-info-cbo"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Initial Names</div>
+                    <div class="info-value" id="co-info-initialnames"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">NIC Number</div>
+                    <div class="info-value" id="co-info-nic"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Address</div>
+                    <div class="info-value" id="co-info-address"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Fixed Line</div>
+                    <div class="info-value" id="co-info-fixedline"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">Birthday</div>
+                    <div class="info-value" id="co-info-birthday"></div>
+                  </div>
+                  <div class="info-item" style="margin-bottom:12px;">
+                    <div class="info-label">CBO and Group</div>
+                    <div class="info-value" id="co-info-cbogroup"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs wrapper -->
+          <div class="tabs-wrapper">
+            <div class="tabs-bar">
+              <button class="tab-btn active" onclick="switchOverviewTab(event, 'tab-bank')">Bank Accounts</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-contracts')">Contracts</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-guaranteed')">Guaranteed Contracts</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-business')">Business Info</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-family')">Family Info</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-docs')">Documents</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-grading')">Grading</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-income')">Income & Expenses</button>
+              <button class="tab-btn" onclick="switchOverviewTab(event, 'tab-income-summary')">Total Income & Expenses Overview</button>
+            </div>
+            <div class="tabs-content">
+              <!-- Tab: Bank Accounts -->
+              <div id="tab-bank" class="tab-pane active">
+                <div class="inline-bank-form">
+                  <div class="inline-field">
+                    <label>Bank</label>
+                    <select id="co-bank-name">
+                      <option value="People's Bank">People's Bank</option>
+                      <option value="Bank of Ceylon">Bank of Ceylon</option>
+                      <option value="Commercial Bank">Commercial Bank</option>
+                      <option value="Hatton National Bank">Hatton National Bank</option>
+                    </select>
+                  </div>
+                  <div class="inline-field">
+                    <label>Branch</label>
+                    <select id="co-bank-branch">
+                      <option value="Anamaduwa">Anamaduwa</option>
+                      <option value="Colombo">Colombo</option>
+                      <option value="Kandy">Kandy</option>
+                      <option value="Galle">Galle</option>
+                    </select>
+                  </div>
+                  <div class="inline-field">
+                    <label>Account Number</label>
+                    <input type="text" id="co-bank-acc" placeholder="Account Number" />
+                  </div>
+                  <div class="inline-field">
+                    <input type="checkbox" id="co-bank-default" />
+                    <label for="co-bank-default">Mark As Default</label>
+                  </div>
+                  <button class="btn-inline-save" onclick="saveBankAccount()">Save</button>
+                </div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Bank</th>
+                        <th>Branch</th>
+                        <th>Account Number</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="co-bank-tbody">
+                      <tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No bank accounts added.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab: Contracts -->
+              <div id="tab-contracts" class="tab-pane">
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Loan No</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody id="co-contracts-tbody">
+                      <tr><td colspan="5" style="text-align:center;padding:12px;color:#888;">No contracts found.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab: Guaranteed Contracts -->
+              <div id="tab-guaranteed" class="tab-pane">
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Loan No</th>
+                        <th>Client Name</th>
+                        <th>Amount</th>
+                        <th>Guarantor Level</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No guaranteed contracts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Other tabs showing beautiful mock placeholders -->
+              <div id="tab-business" class="tab-pane">
+                <div style="font-size:13px; color:#555;">No business profile records found for this client.</div>
+              </div>
+              <div id="tab-family" class="tab-pane">
+                <div style="font-size:13px; color:#555;">No family detail records found for this client.</div>
+              </div>
+              <div id="tab-docs" class="tab-pane">
+                <div style="font-size:13px; color:#555;">No uploaded files or documents found.</div>
+              </div>
+              <div id="tab-grading" class="tab-pane">
+                <div style="font-size:13px; color:#555;">Client Grading: Level 0 (Excellent Credit Risk Rating).</div>
+              </div>
+              <div id="tab-income" class="tab-pane">
+                <div style="font-size:13px; color:#555;">Income & Expenses declarations: Net Monthly Surplus: LKR 0.00.</div>
+              </div>
+              <div id="tab-income-summary" class="tab-pane">
+                <div style="font-size:13px; color:#555;">Total Income & Expenses Overview: No records available.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: SETTLE LOANS
+      ═══════════════════════════════════ -->
+      <div id="page-settle-loans" class="page-section" style="display:none;">
+        <div class="page-title">Settle Loan</div>
+
+        <!-- Search Criteria -->
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="sl-branch">
+                <option value="ANAMADUWA">ANAMADUWA</option>
+                <option value="COLOMBO">COLOMBO</option>
+                <option value="KANDY">KANDY</option>
+                <option value="GALLE">GALLE</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Credit Officer</label>
+              <select id="sl-officer">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>CBO</label>
+              <select id="sl-cbo">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+          </div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Loan Type</label>
+              <select id="sl-loan-type">
+                <option value="">-- All --</option>
+                <option value="Micro Finance">Micro Finance</option>
+                <option value="Business">Business</option>
+                <option value="Customer">Customer</option>
+                <option value="Micro Express">Micro Express</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Loan Status</label>
+              <select id="sl-status">
+                <option value="Disbursed">Disbursed</option>
+                <option value="Active">Active</option>
+                <option value="Approved">Approved</option>
+                <option value="Pending">Pending</option>
+                <option value="Settled">Settled</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="loadLoansForSettlement()">Load Loans</button>
+            <button class="btn btn-grey" onclick="cancelSettlementSearch()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Results table -->
+        <div id="settle-loans-results" class="results-section" style="display:none;">
+          <div class="results-title">Loans</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Branch</th>
+                  <th>Product</th>
+                  <th>Loan No</th>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>Agreed Amount</th>
+                  <th>Paid Amount</th>
+                  <th>Credit Officer</th>
+                  <th>Disbursement Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="sl-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: CBO ATTENDANCE
+      ═══════════════════════════════════ -->
+      <div id="page-cbo-attendance" class="page-section" style="display:none;">
+        <div class="page-title">CBO Attendance</div>
+
+        <div class="search-box">
+          <div class="search-heading">Details</div>
+          <div class="criteria-row">
+            <div class="criteria-field">
+              <label>Branch</label>
+              <select id="ca-branch">
+                <option value="ANAMADUWA">ANAMADUWA</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Choose CBO *</label>
+              <select id="ca-cbo" required>
+                <option value="">Select the CBO</option>
+              </select>
+            </div>
+            <div class="criteria-field">
+              <label>Filter By</label>
+              <select id="ca-filter">
+                <option value="Attendance Unmarked">Attendance Unmarked</option>
+                <option value="Attendance Marked">Attendance Marked</option>
+                <option value="All">All</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="loadCboAttendance()">Load CBO's</button>
+            <button class="btn btn-grey" onclick="cancelCboAttendance()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Attendance results -->
+        <div id="cbo-attendance-results" class="results-section" style="display:none;">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>CBO</th>
+                  <th>Credit Officer</th>
+                  <th>Meeting Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="ca-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: CBO GROUP MANAGEMENT
+      ═══════════════════════════════════ -->
+      <div id="page-cbo-group-management" class="page-section" style="display:none;">
+        <div class="page-title">CBO Group Management</div>
+
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="form-grid-2col">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="form-row-aligned">
+                <label>Branch</label>
+                <select id="cgm-branch">
+                  <option value="">-- Select Branch --</option>
+                </select>
+              </div>
+              <div class="form-row-aligned">
+                <label>NIC</label>
+                <input type="text" id="cgm-nic" placeholder="NIC" />
+              </div>
+              <div class="form-row-aligned">
+                <label>Group Code</label>
+                <input type="text" id="cgm-groupcode" placeholder="Group Code" />
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="form-row-aligned">
+                <label>CBO</label>
+                <select id="cgm-cbo">
+                  <option value="">-- Select CBO --</option>
+                </select>
+              </div>
+              <div class="form-row-aligned">
+                <label>Client Name</label>
+                <input type="text" id="cgm-clientname" placeholder="Client Name" />
+              </div>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-left: 154px;">
+            <button class="btn btn-green" onclick="addClientToGroupList()">Add Client</button>
+            <button class="btn btn-grey" onclick="clearGroupMgmtForm()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Add block list -->
+        <div class="results-section" id="cgm-add-section" style="margin-bottom:24px; display:none;">
+          <div class="results-title">Add Members to Group</div>
+          <div class="table-wrapper" style="margin-bottom:12px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cgm-add-tbody"></tbody>
+            </table>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="submitAddMembersToGroup()">Add Members to Group</button>
+            <button class="btn btn-grey" onclick="clearAddGroupList()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Existing list table -->
+        <div class="results-section">
+          <div class="results-title">Members List</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Member Index</th>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>CBO Position</th>
+                  <th>Has Group</th>
+                  <th>Eligibility</th>
+                  <th>Group</th>
+                  <th>Pick To Group</th>
+                </tr>
+              </thead>
+              <tbody id="cgm-members-tbody">
+                <tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">Select a Branch and CBO to load group members.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: CBO MANAGEMENT (CBO MEMBERS & POSITIONS)
+      ═══════════════════════════════════ -->
+      <div id="page-cbo-management" class="page-section" style="display:none;">
+        <div class="page-title">CBO Management</div>
+
+        <div class="search-box">
+          <div class="search-heading">Search Criteria</div>
+          <div class="form-grid-2col">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="form-row-aligned">
+                <label>Branch</label>
+                <select id="cm-branch">
+                  <option value="">-- Select Branch --</option>
+                </select>
+              </div>
+              <div class="form-row-aligned">
+                <label>NIC</label>
+                <input type="text" id="cm-nic" placeholder="NIC" />
+              </div>
+              <div class="form-row-aligned">
+                <label>Position</label>
+                <select id="cm-position">
+                  <option value="Member">Member</option>
+                  <option value="President">President</option>
+                  <option value="Secretary">Secretary</option>
+                  <option value="Treasurer">Treasurer</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="form-row-aligned">
+                <label>CBO</label>
+                <select id="cm-cbo">
+                  <option value="">-- Select CBO --</option>
+                </select>
+              </div>
+              <div class="form-row-aligned">
+                <label>Client Name</label>
+                <input type="text" id="cm-clientname" placeholder="Client Name" />
+              </div>
+              <div class="form-row-aligned">
+                <label>Group Code</label>
+                <input type="text" id="cm-groupcode" placeholder="Group Code (Optional)" />
+              </div>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-left: 154px;">
+            <button class="btn btn-green" onclick="addClientToCboList()">Add Client</button>
+            <button class="btn btn-grey" onclick="clearCboMgmtForm()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Add block list -->
+        <div class="results-section" id="cm-add-section" style="margin-bottom:24px; display:none;">
+          <div class="results-title">Add Members to CBO</div>
+          <div class="table-wrapper" style="margin-bottom:12px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>CBO Position</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cm-add-tbody"></tbody>
+            </table>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="submitAddMembersToCbo()">Add Members to CBO</button>
+            <button class="btn btn-grey" onclick="clearAddCboList()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Existing list table -->
+        <div class="results-section">
+          <div class="results-title">CBO Members List</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Member Index</th>
+                  <th>Client</th>
+                  <th>NIC</th>
+                  <th>CBO Position</th>
+                  <th>Has Group</th>
+                  <th>Eligibility</th>
+                  <th>Group</th>
+                </tr>
+              </thead>
+              <tbody id="cm-members-tbody">
+                <tr><td colspan="7" style="text-align:center;padding:16px;color:#888;">Select a Branch and CBO to load members list.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+           PAGE: COMING SOON (placeholder for future pages)
+      ═══════════════════════════════════ -->
+      <div id="page-coming-soon" class="page-section" style="display:none;">
+        <div class="coming-soon-box">
+          <h3 id="coming-soon-title">Page</h3>
+          <p>Send a screenshot of this page and we'll build it next.</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</div><!-- /.layout -->
+
+<script>
+  /* ══════════════════════════════════════
+     CONSTANTS – API_BASE comes from config.js
+  ══════════════════════════════════════ */
+
+  /* ══════════════════════════════════════
+     SESSION GUARD – check JWT token
+  ══════════════════════════════════════ */
+  const authToken    = sessionStorage.getItem('authToken');
+  const loggedInUser = sessionStorage.getItem('loggedInUser');
+
+  if (!authToken || !loggedInUser) {
+    window.location.href = 'loginpage.html';
+  } else {
+    document.getElementById('display-username').textContent = loggedInUser;
+  }
+
+  /* ══════════════════════════════════════
+     API HELPER – always send JWT token
+  ══════════════════════════════════════ */
+  function apiFetch(path, options = {}) {
+    const token = sessionStorage.getItem('authToken');
+    return fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...(options.headers || {}),
+      },
+    }).then(r => {
+      if (r.status === 401) {
+        /* Token expired or invalid – force re-login */
+        sessionStorage.clear();
+        window.location.href = 'loginpage.html';
+        return Promise.reject('Session expired');
+      }
+      return r.json();
+    });
+  }
+
+  /* ══════════════════════════════════════
+     LOGOUT
+  ══════════════════════════════════════ */
+  function handleLogout() {
+    apiFetch('/api/logout', { method: 'POST' }).finally(() => {
+      sessionStorage.clear();
+      window.location.href = 'loginpage.html';
+    });
+  }
+
+  function toggleUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    dd.classList.toggle('open');
+  }
+
+  /* Close dropdown if clicking outside */
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('tb-username-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      const dd = document.getElementById('user-dropdown');
+      if (dd) dd.classList.remove('open');
+    }
+  });
+
+  /* ══════════════════════════════════════
+     SIDEBAR TOGGLE
+  ══════════════════════════════════════ */
+  let sidebarVisible = true;
+  function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    sidebarVisible = !sidebarVisible;
+    if (sidebarVisible) {
+      sb.style.width    = '205px';
+      sb.style.minWidth = '205px';
+      sb.style.overflow = '';
+    } else {
+      sb.style.width    = '0';
+      sb.style.minWidth = '0';
+      sb.style.overflow = 'hidden';
+    }
+  }
+
+  /* ══════════════════════════════════════
+     MENU TOGGLE
+  ══════════════════════════════════════ */
+  function toggleMenu(subId, catEl) {
+    const sub    = document.getElementById(subId);
+    const isOpen = sub.classList.contains('open');
+    document.querySelectorAll('.submenu').forEach(s => s.classList.remove('open'));
+    document.querySelectorAll('.menu-category').forEach(c => c.classList.remove('open'));
+    if (!isOpen) { sub.classList.add('open'); catEl.classList.add('open'); }
+  }
+
+  function toggleSubMenu(subId) {
+    document.getElementById(subId).classList.toggle('open');
+  }
+
+  /* ══════════════════════════════════════
+     PAGE SWITCHER
+  ══════════════════════════════════════ */
+  function showPage(pageId, sourceEl, label) {
+    /* hide all pages */
+    document.querySelectorAll('.page-section').forEach(p => p.style.display = 'none');
+
+    /* clear active states */
+    document.querySelectorAll('.menu-row').forEach(r => r.classList.remove('active'));
+    document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
+
+    /* set active on clicked item */
+    if (sourceEl && sourceEl.classList) sourceEl.classList.add('active');
+
+    /* fix main-content layout per page */
+    const mc = document.getElementById('main-content');
+
+    if (pageId === 'page-home') {
+      mc.style.alignItems     = 'center';
+      mc.style.justifyContent = 'center';
+      document.getElementById('nav-dashboard').classList.add('active');
+    } else {
+      mc.style.alignItems     = 'flex-start';
+      mc.style.justifyContent = 'flex-start';
+    }
+
+    /* show target page */
+    const target = document.getElementById(pageId);
+    if (target) target.style.display = '';
+
+    /* coming-soon title */
+    if (pageId === 'page-coming-soon' && label) {
+      document.getElementById('coming-soon-title').textContent = label;
+    }
+  }
+
+  /* ══════════════════════════════════════
+     LOAN DISBURSEMENT
+  ══════════════════════════════════════ */
+  function viewApprovals() {
+    const branch  = document.getElementById('sel-branch').value;
+    const officer = document.getElementById('sel-officer').value;
+    const cbo     = document.getElementById('sel-cbo').value;
+    const params  = new URLSearchParams({ branch, credit_officer: officer, cbo });
+
+    apiFetch(`/api/disburse-loans?${params}`)
+      .then(data => renderDisburseTable(data.loans || []))
+      .catch(() => renderDisburseTable([]));
+  }
+
+  function renderDisburseTable(loans) {
+    const tbody   = document.getElementById('disburse-tbody');
+    const section = document.getElementById('disburse-results');
+    tbody.innerHTML = '';
+
+    if (!loans || loans.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">No loans found.</td></tr>';
+    } else {
+      loans.forEach((loan, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td><a class="td-link" href="#" onclick="return false;">${loan.loan_no}</a></td>
+          <td>${parseFloat(loan.amount).toFixed(2)}</td>
+          <td>${loan.reg_date || ''}</td>
+          <td>${loan.client_id || ''}</td>
+          <td>${loan.cbo || ''}</td>
+          <td><button class="btn-select"   onclick="disburse('${loan.id}')">Select Loan</button></td>
+          <td><button class="btn-sendback" onclick="sendBack('${loan.id}')">Send Back</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    section.style.display = '';
+  }
+
+  function disburse(id) {
+    if (!confirm('Disburse this loan?')) return;
+    apiFetch(`/api/disburse-loans/${id}/disburse`, { method: 'POST' })
+      .then(d => { if (d.success) { alert('Loan disbursed.'); viewApprovals(); } else alert(d.message); })
+      .catch(() => alert('Error disbursing loan.'));
+  }
+
+  function sendBack(id) {
+    if (!confirm('Send this loan back?')) return;
+    apiFetch(`/api/disburse-loans/${id}/send-back`, { method: 'POST' })
+      .then(d => { if (d.success) { alert('Loan sent back.'); viewApprovals(); } else alert(d.message); })
+      .catch(() => alert('Error sending loan back.'));
+  }
+
+  function cancelApprovals() {
+    document.getElementById('disburse-results').style.display = 'none';
+    document.getElementById('disburse-tbody').innerHTML = '';
+  }
+
+  /* ══════════════════════════════════════
+     LOAN OVERVIEW
+  ══════════════════════════════════════ */
+  function selectLoan() {
+    const params = new URLSearchParams({
+      branch:          document.getElementById('lo-branch').value,
+      credit_officer:  document.getElementById('lo-officer').value,
+      cbo:             document.getElementById('lo-cbo').value,
+      loan_type:       document.getElementById('lo-loan-type').value,
+      status:          document.getElementById('lo-status').value,
+      search_by:       document.getElementById('lo-search-by').value,
+      keyword:         document.getElementById('lo-keyword').value,
+      loan_id:         document.getElementById('lo-loan-id').value,
+    });
+
+    apiFetch(`/api/loans?${params}`)
+      .then(data => {
+        const loans = data.loans || [];
+        const tbody = document.getElementById('lo-tbody');
+        const section = document.getElementById('loan-overview-results');
+        tbody.innerHTML = '';
+        if (!loans.length) {
+          tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:16px;color:#888;">No loans found.</td></tr>';
+        } else {
+          loans.forEach(loan => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${loan.branch || ''}</td>
+              <td>${loan.loan_no || ''}</td>
+              <td>${loan.client_id || ''}</td>
+              <td></td>
+              <td>${parseFloat(loan.amount || 0).toFixed(2)}</td>
+              <td>${loan.loan_type || ''}</td>
+              <td>${loan.status || ''}</td>
+              <td>${loan.credit_officer || ''}</td>
+              <td>${loan.disbursement_date || ''}</td>
+              <td><button class="btn-select" onclick="return false;">View</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        section.style.display = '';
+      })
+      .catch(() => alert('Error loading loans.'));
+  }
+
+  function cancelLoan() {
+    document.getElementById('loan-overview-results').style.display = 'none';
+    document.getElementById('lo-tbody').innerHTML = '';
+  }
+
+  /* ══════════════════════════════════════
+     PRINT LOANS AGREEMENT
+  ══════════════════════════════════════ */
+  function viewLoansForPrint() {
+    const params = new URLSearchParams({
+      branch:         document.getElementById('pa-branch').value,
+      credit_officer: document.getElementById('pa-officer').value,
+    });
+
+    apiFetch(`/api/loans?${params}`)
+      .then(data => {
+        const loans = data.loans || [];
+        const tbody = document.getElementById('pa-tbody');
+        const section = document.getElementById('pa-results');
+        tbody.innerHTML = '';
+        if (!loans.length) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:16px;color:#888;">No loans found.</td></tr>';
+        } else {
+          loans.forEach(loan => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${loan.loan_no || ''}</td>
+              <td>${loan.client_id || ''}</td>
+              <td></td>
+              <td>${parseFloat(loan.amount || 0).toFixed(2)}</td>
+              <td>${loan.reg_date || ''}</td>
+              <td>${loan.credit_officer || ''}</td>
+              <td><button class="btn-select" onclick="window.print()">Print</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        section.style.display = '';
+      })
+      .catch(() => alert('Error loading loans.'));
+  }
+
+  function cancelPrint() {
+    document.getElementById('pa-results').style.display = 'none';
+    document.getElementById('pa-tbody').innerHTML = '';
+  }
+
+  /* ══════════════════════════════════════
+     ALL LOANS
+  ══════════════════════════════════════ */
+  function selectAllLoans() {
+    const params = new URLSearchParams({
+      branch:         document.getElementById('al-branch').value,
+      credit_officer: document.getElementById('al-officer').value,
+      cbo:            document.getElementById('al-cbo').value,
+      loan_type:      document.getElementById('al-loan-type').value,
+      status:         document.getElementById('al-status').value,
+      from_date:      document.getElementById('al-from-date').value,
+      to_date:        document.getElementById('al-to-date').value,
+    });
+
+    apiFetch(`/api/loans?${params}`)
+      .then(data => {
+        const loans = data.loans || [];
+        const tbody = document.getElementById('al-tbody');
+        const section = document.getElementById('all-loans-results');
+        tbody.innerHTML = '';
+        if (!loans.length) {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:16px;color:#888;">No loans found.</td></tr>';
+        } else {
+          loans.forEach(loan => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${loan.branch || ''}</td>
+              <td>${loan.product || loan.loan_type || ''}</td>
+              <td>${loan.loan_no || ''}</td>
+              <td>${loan.client_id || ''}</td>
+              <td></td>
+              <td>${parseFloat(loan.amount || 0).toFixed(2)}</td>
+              <td>${loan.credit_officer || ''}</td>
+              <td>${loan.disbursement_date || ''}</td>
+              <td><button class="btn-select" onclick="return false;">View</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        section.style.display = '';
+      })
+      .catch(() => alert('Error loading loans.'));
+  }
+
+  function cancelAllLoans() {
+    document.getElementById('all-loans-results').style.display = 'none';
+    document.getElementById('al-tbody').innerHTML = '';
+  }
+
+  /* ══════════════════════════════════════
+     DYNAMIC DROPDOWN LOADERS
+  ══════════════════════════════════════ */
+  function loadDropdownData(branch = 'ANAMADUWA') {
+    // Load CBOs
+    apiFetch(`/api/cbos?branch=${branch}`).then(data => {
+      const cbos = data.cbos || [];
+      const cboSelects = ['sel-cbo', 'gp-cbo', 'lo-cbo', 'al-cbo', 'nc-cbo', 'sl-cbo', 'ca-cbo', 'cgm-cbo', 'cm-cbo'];
+      cboSelects.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (id === 'ca-cbo') el.innerHTML = '<option value="">Select the CBO</option>';
+        else if (id === 'nc-cbo' || id === 'cgm-cbo' || id === 'cm-cbo') el.innerHTML = '<option value="">-- Select CBO --</option>';
+        else el.innerHTML = '<option value="">-- All --</option>';
+        
+        cbos.forEach(c => {
+          el.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+        });
+      });
+    });
+
+    // Load Credit Officers
+    apiFetch(`/api/credit-officers?branch=${branch}`).then(data => {
+      const officers = data.officers || [];
+      const officerSelects = ['sel-officer', 'lo-officer', 'pa-officer', 'al-officer', 'sl-officer'];
+      officerSelects.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '<option value="">-- All --</option>';
+        if (id === 'pa-officer') el.innerHTML = '<option value="">-- Select Credit Officer --</option>';
+        officers.forEach(o => {
+          el.innerHTML += `<option value="${o.username}">${o.display_name}</option>`;
+        });
+      });
+    });
+  }
+
+  function initBranchListeners() {
+    ['sel-branch', 'lo-branch', 'al-branch', 'sl-branch', 'nc-branch', 'ca-branch', 'cgm-branch', 'cm-branch'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('change', function() {
+          loadDropdownData(this.value);
+        });
+      }
+    });
+  }
+
+  // Load branches dynamic list
+  function loadBranchList() {
+    apiFetch('/api/branches').then(data => {
+      const branches = data.branches || [];
+      const branchSelects = ['sel-branch', 'gp-branch', 'lo-branch', 'pa-branch', 'al-branch', 'nc-branch', 'sl-branch', 'ca-branch', 'cgm-branch', 'cm-branch'];
+      branchSelects.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '';
+        if (id === 'ca-branch') {
+          el.innerHTML = '<option value="">-- Select --</option>';
+        } else if (id !== 'sel-branch' && id !== 'pa-branch' && id !== 'nc-branch' && id !== 'cgm-branch' && id !== 'cm-branch') {
+          el.innerHTML = '<option value="">-- All --</option>';
+        } else if (id === 'cgm-branch' || id === 'cm-branch') {
+          el.innerHTML = '<option value="">-- Select Branch --</option>';
+        }
+        branches.forEach(b => {
+          el.innerHTML += `<option value="${b.name}">${b.name}</option>`;
+        });
+      });
+      loadDropdownData('ANAMADUWA');
+    });
+  }
+
+  // Call on script load
+  initBranchListeners();
+  setTimeout(loadBranchList, 200);
+
+  /* Overwrite showPage to hook page loads */
+  const originalShowPage = showPage;
+  showPage = function(pageId, sourceEl, label) {
+    originalShowPage(pageId, sourceEl, label);
+    if (pageId === 'page-client-search') {
+      loadClientList();
+    }
+  };
+
+  /* ══════════════════════════════════════
+     NEW CLIENT MANAGEMENT
+  ══════════════════════════════════════ */
+  function saveNewClient(e) {
+    e.preventDefault();
+    const nic = document.getElementById('nc-nic').value.trim();
+    const repeatNic = document.getElementById('nc-repeat-nic').value.trim();
+    if (nic.toUpperCase() !== repeatNic.toUpperCase()) {
+      alert('NIC values do not match!');
+      return;
+    }
+
+    const payload = {
+      title: document.getElementById('nc-title').value,
+      nic: nic,
+      initials: document.getElementById('nc-initials').value,
+      first_name: document.getElementById('nc-initials').value,
+      last_name: document.getElementById('nc-lastname').value,
+      gender: document.getElementById('nc-gender').value,
+      mobile_no: document.getElementById('nc-mobile').value,
+      house_no: document.getElementById('nc-houseno').value,
+      branch: document.getElementById('nc-branch').value,
+      names_denoted_by_initials: document.getElementById('nc-names-initials').value,
+      dob: document.getElementById('nc-dob').value,
+      civil_status: document.getElementById('nc-civilstatus').value,
+      land_phone: document.getElementById('nc-landphone').value,
+      street_address: document.getElementById('nc-streetaddress').value,
+      cbo: document.getElementById('nc-cbo').value,
+    };
+
+    apiFetch('/api/clients', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Client saved successfully!');
+        resetNewClientForm();
+        // find client search sidebar item and highlight it
+        const subItems = document.querySelectorAll('.submenu-item');
+        let searchEl = null;
+        subItems.forEach(item => {
+          if (item.textContent.includes('Client Search')) searchEl = item;
+        });
+        showPage('page-client-search', searchEl);
+      } else {
+        alert(data.message || 'Error saving client.');
+      }
+    })
+    .catch(err => {
+      alert('Failed to save client: ' + err);
+    });
+  }
+
+  function resetNewClientForm() {
+    document.getElementById('form-new-client').reset();
+  }
+
+  /* ══════════════════════════════════════
+     CLIENT LIST & SEARCH
+  ══════════════════════════════════════ */
+  function loadClientList() {
+    apiFetch('/api/clients')
+      .then(data => {
+        const clients = data.clients || [];
+        const tbody = document.getElementById('cs-tbody');
+        tbody.innerHTML = '';
+        if (clients.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">No clients found.</td></tr>';
+          return;
+        }
+        clients.forEach((c, idx) => {
+          const tr = document.createElement('tr');
+          const code = 'C' + (1000 + idx);
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${code}</td>
+            <td>${c.full_name || (c.first_name + ' ' + c.last_name)}</td>
+            <td>${c.nic || ''}</td>
+            <td>${c.mobile_no || c.contact || ''}</td>
+            <td>${c.created_at || ''}</td>
+            <td><span class="badge-active">Active</span></td>
+            <td>
+              <button class="btn-action-view" onclick="viewClientOverviewDirect('${c.nic}')">View</button>
+              <button class="btn-action-edit" onclick="alert('Editing client details is not supported in this version.')">Edit</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading clients:', err);
+      });
+  }
+
+  function viewClientOverviewDirect(nic) {
+    const subItems = document.querySelectorAll('.submenu-item');
+    let overviewEl = null;
+    subItems.forEach(item => {
+      if (item.textContent.includes('Client Overview')) overviewEl = item;
+    });
+    showPage('page-client-overview', overviewEl);
+    document.getElementById('co-search-keyword').value = nic;
+    searchClientForOverview();
+  }
+
+  function handleClientToolsChange() {
+    const val = document.getElementById('cs-tools').value;
+    if (val === 'refresh') {
+      loadClientList();
+      document.getElementById('cs-tools').value = '';
+    }
+  }
+
+  /* ══════════════════════════════════════
+     CLIENT OVERVIEW & TABS
+  ══════════════════════════════════════ */
+  let currentOverviewClient = null;
+
+  function searchClientForOverview() {
+    const keyword = document.getElementById('co-search-keyword').value.trim();
+    const name = document.getElementById('co-search-name').value.trim();
+    if (!keyword && !name) {
+      alert('Please enter a NIC/Phone or Client Name to search.');
+      return;
+    }
+
+    let url = `/api/clients?keyword=${encodeURIComponent(keyword || name)}`;
+    apiFetch(url)
+      .then(data => {
+        const clients = data.clients || [];
+        if (clients.length === 0) {
+          alert('No client found matching the search criteria.');
+          clearClientOverview();
+          return;
+        }
+        const client = clients[0];
+        displayClientOverview(client);
+      })
+      .catch(err => {
+        alert('Error searching client: ' + err);
+      });
+  }
+
+  function displayClientOverview(client) {
+    currentOverviewClient = client;
+    document.getElementById('co-client-id').value = client.id;
+
+    // Set Personal Info
+    document.getElementById('co-info-initials').textContent = client.initials || client.first_name || '';
+    document.getElementById('co-info-lastname').textContent = client.last_name || '';
+    document.getElementById('co-info-mobile').textContent = client.mobile_no || client.contact || '';
+    document.getElementById('co-info-level').textContent = client.client_level || 'Level 0';
+    document.getElementById('co-info-gender').textContent = client.gender || '';
+    document.getElementById('co-info-cbo').textContent = client.cbo || '';
+
+    document.getElementById('co-info-initialnames').textContent = client.names_denoted_by_initials || '';
+    document.getElementById('co-info-nic').textContent = client.nic || '';
+    document.getElementById('co-info-address').textContent = client.street_address || '';
+    document.getElementById('co-info-fixedline').textContent = client.land_phone || '';
+    document.getElementById('co-info-birthday').textContent = client.dob || '';
+    document.getElementById('co-info-cbogroup').textContent = client.cbo ? `${client.cbo} / G-2` : '';
+
+    // Set Profile Photo
+    const photoWrapper = document.getElementById('co-photo-wrapper');
+    if (client.profile_image) {
+      photoWrapper.innerHTML = `<img src="${client.profile_image}" alt="Profile Photo" />`;
+    } else {
+      photoWrapper.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      `;
+    }
+
+    renderBankAccountsTable(client.bank_accounts || []);
+    loadOverviewContracts(client.id);
+
+    document.getElementById('co-details-box').style.display = '';
+  }
+
+  function clearClientOverview() {
+    currentOverviewClient = null;
+    document.getElementById('co-search-keyword').value = '';
+    document.getElementById('co-search-name').value = '';
+    document.getElementById('co-client-id').value = '';
+    document.getElementById('co-details-box').style.display = 'none';
+  }
+
+  let selectedPhotoBase64 = "";
+
+  function previewProfilePhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      selectedPhotoBase64 = e.target.result;
+      document.getElementById('co-photo-wrapper').innerHTML = `<img src="${selectedPhotoBase64}" alt="Preview" />`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function uploadProfilePhoto() {
+    const clientId = document.getElementById('co-client-id').value;
+    if (!clientId) {
+      alert('No client selected.');
+      return;
+    }
+    if (!selectedPhotoBase64) {
+      alert('Please select a file first.');
+      return;
+    }
+
+    apiFetch(`/api/clients/${clientId}/profile-image`, {
+      method: 'POST',
+      body: JSON.stringify({ image_data: selectedPhotoBase64 })
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Profile image applied successfully!');
+        if (currentOverviewClient) currentOverviewClient.profile_image = selectedPhotoBase64;
+        selectedPhotoBase64 = "";
+      } else {
+        alert(data.message || 'Failed to update profile image.');
+      }
+    })
+    .catch(err => {
+      alert('Error updating profile image: ' + err);
+    });
+  }
+
+  function switchOverviewTab(event, tabId) {
+    const tabs = event.target.parentElement.children;
+    for (let i = 0; i < tabs.length; i++) {
+      tabs[i].classList.remove('active');
+    }
+    event.target.classList.add('active');
+
+    const panes = document.getElementById(tabId).parentElement.children;
+    for (let i = 0; i < panes.length; i++) {
+      panes[i].classList.remove('active');
+    }
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function renderBankAccountsTable(accounts) {
+    const tbody = document.getElementById('co-bank-tbody');
+    tbody.innerHTML = '';
+    if (accounts.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No bank accounts added.</td></tr>';
+      return;
+    }
+    accounts.forEach((acc, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${acc.bank}</td>
+        <td>${acc.branch}</td>
+        <td>${acc.account_number} ${acc.is_default ? '<strong>(Default)</strong>' : ''}</td>
+        <td><button class="btn-delete-bank" onclick="deleteBankAccount(${idx})">Delete</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function saveBankAccount() {
+    const clientId = document.getElementById('co-client-id').value;
+    if (!clientId) return;
+
+    const bank = document.getElementById('co-bank-name').value;
+    const branch = document.getElementById('co-bank-branch').value;
+    const accNo = document.getElementById('co-bank-acc').value.trim();
+    const isDefault = document.getElementById('co-bank-default').checked;
+
+    if (!accNo) {
+      alert('Please enter an account number.');
+      return;
+    }
+
+    apiFetch(`/api/clients/${clientId}/bank-accounts`, {
+      method: 'POST',
+      body: JSON.stringify({ bank, branch, account_number: accNo, is_default: isDefault })
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Bank account added.');
+        document.getElementById('co-bank-acc').value = '';
+        document.getElementById('co-bank-default').checked = false;
+        if (currentOverviewClient) currentOverviewClient.bank_accounts = data.bank_accounts;
+        renderBankAccountsTable(data.bank_accounts || []);
+      } else {
+        alert(data.message || 'Failed to add bank account.');
+      }
+    })
+    .catch(err => {
+      alert('Error: ' + err);
+    });
+  }
+
+  function deleteBankAccount(idx) {
+    const clientId = document.getElementById('co-client-id').value;
+    if (!clientId) return;
+    if (!confirm('Are you sure you want to delete this bank account?')) return;
+
+    apiFetch(`/api/clients/${clientId}/bank-accounts/${idx}`, {
+      method: 'DELETE'
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Bank account deleted.');
+        if (currentOverviewClient) currentOverviewClient.bank_accounts = data.bank_accounts;
+        renderBankAccountsTable(data.bank_accounts || []);
+      } else {
+        alert(data.message || 'Failed to delete bank account.');
+      }
+    })
+    .catch(err => {
+      alert('Error: ' + err);
+    });
+  }
+
+  function loadOverviewContracts(clientId) {
+    apiFetch(`/api/loans?keyword=${clientId}`)
+      .then(data => {
+        const loans = data.loans || [];
+        const tbody = document.getElementById('co-contracts-tbody');
+        tbody.innerHTML = '';
+        if (loans.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:12px;color:#888;">No contracts found.</td></tr>';
+          return;
+        }
+        loans.forEach(loan => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${loan.loan_no}</td>
+            <td>${loan.loan_type || 'Micro Finance'}</td>
+            <td>${parseFloat(loan.amount).toFixed(2)}</td>
+            <td><span style="font-weight:600;color:${loan.status==='Settled'?'green':'orange'}">${loan.status}</span></td>
+            <td>${loan.reg_date || ''}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading client contracts:', err);
+      });
+  }
+
+  /* ══════════════════════════════════════
+     LOAN SETTLEMENT (Settle Loan)
+  ══════════════════════════════════════ */
+  function loadLoansForSettlement() {
+    const params = new URLSearchParams({
+      branch:          document.getElementById('sl-branch').value,
+      credit_officer:  document.getElementById('sl-officer').value,
+      cbo:             document.getElementById('sl-cbo').value,
+      loan_type:       document.getElementById('sl-loan-type').value,
+      status:          document.getElementById('sl-status').value,
+    });
+
+    apiFetch(`/api/loans?${params}`)
+      .then(data => {
+        const loans = data.loans || [];
+        const tbody = document.getElementById('sl-tbody');
+        const section = document.getElementById('settle-loans-results');
+        tbody.innerHTML = '';
+        if (loans.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:16px;color:#888;">No loans found matching criteria.</td></tr>';
+        } else {
+          loans.forEach((loan, idx) => {
+            const tr = document.createElement('tr');
+            const agreed = parseFloat(loan.amount || 0);
+            const paid = parseFloat(loan.paid_amount || 0);
+            const isSettled = loan.status === 'Settled';
+            const actionBtn = isSettled 
+              ? '<span style="color:green;font-weight:bold;">Settled</span>'
+              : `<button class="btn-select" style="background:#5CB85C;" onclick="settleLoanDirect('${loan.id}')">Settle</button>`;
+
+            tr.innerHTML = `
+              <td>${idx + 1}</td>
+              <td>${loan.branch || ''}</td>
+              <td>${loan.loan_type || 'Micro Finance'}</td>
+              <td>${loan.loan_no || ''}</td>
+              <td>${loan.client_name || loan.client_id || ''}</td>
+              <td>${loan.client_nic || ''}</td>
+              <td>${agreed.toFixed(2)}</td>
+              <td>${paid.toFixed(2)}</td>
+              <td>${loan.credit_officer || ''}</td>
+              <td>${loan.disbursement_date || ''}</td>
+              <td>${actionBtn}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        section.style.display = '';
+      })
+      .catch(err => {
+        alert('Error loading loans for settlement: ' + err);
+      });
+  }
+
+  function settleLoanDirect(loanId) {
+    if (!confirm('Are you sure you want to settle this loan?')) return;
+
+    apiFetch(`/api/loans/${loanId}/settle`, { method: 'POST' })
+      .then(data => {
+        if (data.success) {
+          alert('Loan successfully settled!');
+          loadLoansForSettlement();
+        } else {
+          alert(data.message || 'Failed to settle loan.');
+        }
+      })
+      .catch(err => {
+        alert('Error settling loan: ' + err);
+      });
+  }
+
+  function cancelSettlementSearch() {
+    document.getElementById('settle-loans-results').style.display = 'none';
+    document.getElementById('sl-tbody').innerHTML = '';
+  }
+
+  /* ══════════════════════════════════════
+     CBO ATTENDANCE
+  ══════════════════════════════════════ */
+  function loadCboAttendance() {
+    const branch = document.getElementById('ca-branch').value;
+    const cbo = document.getElementById('ca-cbo').value;
+    const filter = document.getElementById('ca-filter').value;
+
+    const params = new URLSearchParams({ branch, cbo, filter });
+    apiFetch(`/api/cbo-attendance?${params}`)
+      .then(data => {
+        const list = data.attendance || [];
+        const tbody = document.getElementById('ca-tbody');
+        tbody.innerHTML = '';
+        if (list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:16px;color:#888;">No attendance schedules found.</td></tr>';
+        } else {
+          list.forEach(m => {
+            const tr = document.createElement('tr');
+            const isMarked = m.status === 'Marked';
+            const actionHtml = isMarked
+              ? '<span class="badge-active" style="background:#5CB85C; margin-right:8px;">Marked</span><button class="btn btn-green" style="height:24px;padding:0 8px;font-size:11px;" onclick="alert(\'Attendance details viewed.\')">View Attendance</button>'
+              : `<button class="btn btn-green" style="height:24px;padding:0 8px;font-size:11px;margin-right:4px;" onclick="markCboMeeting('${m.id}')">Mark Attendance</button><button class="btn btn-green" style="height:24px;padding:0 8px;font-size:11px;" onclick="alert(\'Attendance details viewed.\')">View Attendance</button>`;
+            
+            tr.innerHTML = `
+              <td>${m.cbo_name}</td>
+              <td>${m.credit_officer || ''}</td>
+              <td>${m.meeting_date || ''}</td>
+              <td>${actionHtml}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        document.getElementById('cbo-attendance-results').style.display = '';
+      })
+      .catch(err => alert('Error loading attendance: ' + err));
+  }
+
+  function markCboMeeting(id) {
+    if (!confirm('Mark attendance for this meeting?')) return;
+    apiFetch(`/api/cbo-attendance/${id}/mark`, { method: 'POST' })
+      .then(data => {
+        if (data.success) {
+          alert('Attendance successfully marked!');
+          loadCboAttendance();
+        } else {
+          alert(data.message || 'Error marking attendance.');
+        }
+      })
+      .catch(err => alert('Error: ' + err));
+  }
+
+  function cancelCboAttendance() {
+    document.getElementById('cbo-attendance-results').style.display = 'none';
+    document.getElementById('ca-tbody').innerHTML = '';
+  }
+
+  /* ══════════════════════════════════════
+     CBO GROUP MANAGEMENT
+  ══════════════════════════════════════ */
+  let cgmStagedMembers = [];
+
+  function addClientToGroupList() {
+    const nic = document.getElementById('cgm-nic').value.trim();
+    const name = document.getElementById('cgm-clientname').value.trim();
+    if (!nic && !name) {
+      alert('Please enter NIC or Client Name.');
+      return;
+    }
+
+    apiFetch(`/api/clients?keyword=${encodeURIComponent(nic || name)}`)
+      .then(data => {
+        const clients = data.clients || [];
+        if (clients.length === 0) {
+          alert('Client not found.');
+          return;
+        }
+        const client = clients[0];
+        if (cgmStagedMembers.some(c => c.nic === client.nic)) {
+          alert('Client already added to the list.');
+          return;
+        }
+        cgmStagedMembers.push({
+          full_name: client.full_name,
+          nic: client.nic
+        });
+        renderCgmStagedTable();
+        document.getElementById('cgm-add-section').style.display = '';
+      })
+      .catch(err => alert('Error finding client: ' + err));
+  }
+
+  function renderCgmStagedTable() {
+    const tbody = document.getElementById('cgm-add-tbody');
+    tbody.innerHTML = '';
+    cgmStagedMembers.forEach((c, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.full_name}</td>
+        <td>${c.nic}</td>
+        <td><button class="btn-delete-bank" onclick="removeClientFromCgmStaged(${idx})">Delete</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function removeClientFromCgmStaged(idx) {
+    cgmStagedMembers.splice(idx, 1);
+    renderCgmStagedTable();
+    if (cgmStagedMembers.length === 0) {
+      document.getElementById('cgm-add-section').style.display = 'none';
+    }
+  }
+
+  function submitAddMembersToGroup() {
+    const groupCode = document.getElementById('cgm-groupcode').value.trim();
+    if (!groupCode) {
+      alert('Please enter a Group Code.');
+      return;
+    }
+    if (cgmStagedMembers.length === 0) return;
+
+    const promises = cgmStagedMembers.map(c => {
+      return apiFetch('/api/cbo-groups/add-client', {
+        method: 'POST',
+        body: JSON.stringify({ nic: c.nic, group_code: groupCode })
+      });
+    });
+
+    Promise.all(promises)
+      .then(() => {
+        alert('Members successfully added to the group!');
+        clearAddGroupList();
+        loadCboGroupMembers();
+      })
+      .catch(err => alert('Error adding group members: ' + err));
+  }
+
+  function clearAddGroupList() {
+    cgmStagedMembers = [];
+    document.getElementById('cgm-add-tbody').innerHTML = '';
+    document.getElementById('cgm-add-section').style.display = 'none';
+  }
+
+  function clearGroupMgmtForm() {
+    document.getElementById('cgm-nic').value = '';
+    document.getElementById('cgm-clientname').value = '';
+    document.getElementById('cgm-groupcode').value = '';
+    clearAddGroupList();
+  }
+
+  function loadCboGroupMembers() {
+    const branch = document.getElementById('cgm-branch').value;
+    const cbo = document.getElementById('cgm-cbo').value;
+    if (!branch || !cbo) return;
+
+    const params = new URLSearchParams({ branch, cbo });
+    apiFetch(`/api/cbo-members?${params}`)
+      .then(data => {
+        const list = data.members || [];
+        const tbody = document.getElementById('cgm-members-tbody');
+        tbody.innerHTML = '';
+        if (list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">No members found in this CBO.</td></tr>';
+          return;
+        }
+        list.forEach((m, idx) => {
+          const tr = document.createElement('tr');
+          const isChecked = m.has_group === 'Yes' ? 'checked' : '';
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${m.full_name}</td>
+            <td>${m.nic}</td>
+            <td>${m.cbo_position}</td>
+            <td>${m.has_group}</td>
+            <td>${m.cbo_eligibility}</td>
+            <td>${m.group_code || ''}</td>
+            <td><input type="checkbox" ${isChecked} style="cursor:pointer;" onchange="toggleGroupStatusDirect('${m.nic}', this.checked)" /></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error('Error loading group members:', err));
+  }
+
+  function toggleGroupStatusDirect(nic, shouldAdd) {
+    if (!shouldAdd) {
+      alert('Removing clients from groups is not supported in this menu.');
+      loadCboGroupMembers();
+      return;
+    }
+    const groupCode = prompt('Enter Group Code to assign to client ' + nic + ':');
+    if (!groupCode) {
+      loadCboGroupMembers();
+      return;
+    }
+
+    apiFetch('/api/cbo-groups/add-client', {
+      method: 'POST',
+      body: JSON.stringify({ nic, group_code: groupCode })
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Client assigned to group successfully!');
+        loadCboGroupMembers();
+      } else {
+        alert(data.message || 'Error assigning group.');
+      }
+    })
+    .catch(err => alert('Error: ' + err));
+  }
+
+  /* ══════════════════════════════════════
+     CBO MEMBERS & POSITION MANAGEMENT
+  ══════════════════════════════════════ */
+  let cmStagedMembers = [];
+
+  function addClientToCboList() {
+    const nic = document.getElementById('cm-nic').value.trim();
+    const name = document.getElementById('cm-clientname').value.trim();
+    const position = document.getElementById('cm-position').value;
+    if (!nic && !name) {
+      alert('Please enter NIC or Client Name.');
+      return;
+    }
+
+    apiFetch(`/api/clients?keyword=${encodeURIComponent(nic || name)}`)
+      .then(data => {
+        const clients = data.clients || [];
+        if (clients.length === 0) {
+          alert('Client not found.');
+          return;
+        }
+        const client = clients[0];
+        if (cmStagedMembers.some(c => c.nic === client.nic)) {
+          alert('Client already added to the list.');
+          return;
+        }
+        cmStagedMembers.push({
+          full_name: client.full_name,
+          nic: client.nic,
+          position: position
+        });
+        renderCmStagedTable();
+        document.getElementById('cm-add-section').style.display = '';
+      })
+      .catch(err => alert('Error finding client: ' + err));
+  }
+
+  function renderCmStagedTable() {
+    const tbody = document.getElementById('cm-add-tbody');
+    tbody.innerHTML = '';
+    cmStagedMembers.forEach((c, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.full_name}</td>
+        <td>${c.nic}</td>
+        <td>${c.position}</td>
+        <td><button class="btn-delete-bank" onclick="removeClientFromCmStaged(${idx})">Delete</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function removeClientFromCmStaged(idx) {
+    cmStagedMembers.splice(idx, 1);
+    renderCmStagedTable();
+    if (cmStagedMembers.length === 0) {
+      document.getElementById('cm-add-section').style.display = 'none';
+    }
+  }
+
+  function submitAddMembersToCbo() {
+    const cboName = document.getElementById('cm-cbo').value;
+    if (!cboName) {
+      alert('Please select a CBO.');
+      return;
+    }
+    if (cmStagedMembers.length === 0) return;
+
+    const promises = cmStagedMembers.map(c => {
+      return apiFetch('/api/cbo-members/add-client', {
+        method: 'POST',
+        body: JSON.stringify({ nic: c.nic, cbo: cboName, position: c.position })
+      });
+    });
+
+    Promise.all(promises)
+      .then(() => {
+        alert('Members successfully added to the CBO!');
+        clearAddCboList();
+        loadCboMembers();
+      })
+      .catch(err => alert('Error adding members to CBO: ' + err));
+  }
+
+  function clearAddCboList() {
+    cmStagedMembers = [];
+    document.getElementById('cm-add-tbody').innerHTML = '';
+    document.getElementById('cm-add-section').style.display = 'none';
+  }
+
+  function clearCboMgmtForm() {
+    document.getElementById('cm-nic').value = '';
+    document.getElementById('cm-clientname').value = '';
+    document.getElementById('cm-groupcode').value = '';
+    clearAddCboList();
+  }
+
+  function loadCboMembers() {
+    const branch = document.getElementById('cm-branch').value;
+    const cbo = document.getElementById('cm-cbo').value;
+    const group_code = document.getElementById('cm-groupcode').value.trim();
+    if (!branch || !cbo) return;
+
+    const params = new URLSearchParams({ branch, cbo, group_code });
+    apiFetch(`/api/cbo-members?${params}`)
+      .then(data => {
+        const list = data.members || [];
+        const tbody = document.getElementById('cm-members-tbody');
+        tbody.innerHTML = '';
+        if (list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:16px;color:#888;">No members found in this CBO.</td></tr>';
+          return;
+        }
+        list.forEach((m, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${m.full_name}</td>
+            <td>${m.nic}</td>
+            <td>${m.cbo_position}</td>
+            <td>${m.has_group}</td>
+            <td>${m.cbo_eligibility}</td>
+            <td>${m.group_code || ''}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error('Error loading CBO members:', err));
+  }
+
+  // CBO change listeners to auto-load tables
+  setTimeout(() => {
+    const cgmB = document.getElementById('cgm-branch');
+    const cgmC = document.getElementById('cgm-cbo');
+    if (cgmB) cgmB.addEventListener('change', loadCboGroupMembers);
+    if (cgmC) cgmC.addEventListener('change', loadCboGroupMembers);
+
+    const cmB = document.getElementById('cm-branch');
+    const cmC = document.getElementById('cm-cbo');
+    const cmG = document.getElementById('cm-groupcode');
+    if (cmB) cmB.addEventListener('change', loadCboMembers);
+    if (cmC) cmC.addEventListener('change', loadCboMembers);
+    if (cmG) cmG.addEventListener('input', loadCboMembers);
+  }, 1000);
+</script>
+
+</body>
+</html>
