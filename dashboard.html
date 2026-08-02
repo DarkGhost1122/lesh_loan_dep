@@ -359,6 +359,9 @@
               </select>
             </div>
           </div>
+          <div class="btn-row" style="margin-top: 15px;">
+            <button class="btn btn-green" onclick="loadGroupPaymentSheet()">View</button>
+          </div>
         </div>
 
         <div class="results-section">
@@ -3818,7 +3821,7 @@
         else el.innerHTML = '<option value="">-- All --</option>';
         
         cbos.forEach(c => {
-          el.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+          el.innerHTML += `<option value="${c.name}" data-branch="${c.branch_id || ''}">${c.name}</option>`;
         });
       });
     });
@@ -3898,6 +3901,8 @@
       initRepaymentMatrixPage();
     } else if (pageId === 'page-add-cbo') {
       initAddCboPage();
+    } else if (pageId === 'page-group-payments') {
+      initGroupPaymentsPage();
     }
   };
 
@@ -5517,6 +5522,84 @@
       alert('Error creating CBO. See logs.');
       console.error(err);
     });
+  }
+
+  // ── GROUP COLLECTION LOGIC ────────────────────────────────────────────────
+  function initGroupPaymentsPage() {
+    // Set default date to today if empty
+    const dateEl = document.getElementById('gp-date');
+    if (dateEl && !dateEl.value) {
+      const today = new Date().toISOString().split('T')[0];
+      dateEl.value = today;
+    }
+
+    // Register CBO listener to automatically select branch and date
+    const gpCbo = document.getElementById('gp-cbo');
+    if (gpCbo && !gpCbo.dataset.listenerRegistered) {
+      gpCbo.addEventListener('change', function() {
+        const selectedOpt = this.options[this.selectedIndex];
+        const branchVal = selectedOpt ? selectedOpt.getAttribute('data-branch') : '';
+        if (branchVal) {
+          document.getElementById('gp-branch').value = branchVal;
+        }
+        
+        const dateEl = document.getElementById('gp-date');
+        if (dateEl && !dateEl.value) {
+          const today = new Date().toISOString().split('T')[0];
+          dateEl.value = today;
+        }
+      });
+      gpCbo.dataset.listenerRegistered = 'true';
+    }
+
+    // Clear previous results table
+    document.getElementById('gp-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:#888;">Select criteria and click View to load payment sheet.</td></tr>';
+  }
+
+  function loadGroupPaymentSheet() {
+    const branch = document.getElementById('gp-branch').value;
+    const date = document.getElementById('gp-date').value;
+    const loanType = document.getElementById('gp-loan-type').value;
+    const cbo = document.getElementById('gp-cbo').value;
+    const tbody = document.getElementById('gp-tbody');
+
+    if (!date) {
+      alert('Please select a Date.');
+      return;
+    }
+
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:#888;">Loading payment sheet...</td></tr>';
+
+    let url = `/api/group-payments?date=${date}`;
+    if (branch) url += `&branch=${encodeURIComponent(branch)}`;
+    if (cbo) url += `&cbo=${encodeURIComponent(cbo)}`;
+    if (loanType) url += `&loan_type=${encodeURIComponent(loanType)}`;
+
+    apiFetch(url)
+      .then(data => {
+        if (!data.success || !data.payments || data.payments.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:#888;">No payment data found for selected criteria.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = '';
+        data.payments.forEach(p => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${p.loan_no || ''}</td>
+            <td>${p.client_name || ''}</td>
+            <td>${p.cbo || ''}</td>
+            <td>LKR ${(p.amount || 0).toLocaleString('en-US')}</td>
+            <td>${p.payment_date || ''}</td>
+            <td>${p.collected_by || ''}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading group payments:', err);
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:16px;color:#888;color:red;">Error loading payment data.</td></tr>';
+      });
   }
 
   // CBO change listeners to auto-load tables
