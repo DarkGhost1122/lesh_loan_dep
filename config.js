@@ -7,5 +7,6 @@
    Production (after deploying the backend to Hugging Face Spaces):
      const API_BASE = 'https://YOUR-USERNAME-lesh-backend.hf.space';
 ══════════════════════════════════════════════════ */
-// const API_BASE = 'https://asindu2004-leshloan.hf.space';
-const API_BASE = 'http://localhost:5001';
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
+  ? 'http://localhost:5001'
+  : 'https://asindu2004-leshloan.hf.space';
