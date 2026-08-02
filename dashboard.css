@@ -474,7 +474,8 @@ html, body {
   min-width: 80px;
 }
 
-.criteria-field select {
+.criteria-field select,
+.criteria-field input[type="date"] {
   height: 32px;
   min-width: 200px;
   border: 1px solid #CCCCCC;
@@ -484,11 +485,15 @@ html, body {
   font-family: 'Segoe UI', Arial, sans-serif;
   color: #333;
   padding: 0 8px;
-  cursor: pointer;
   outline: none;
 }
 
-.criteria-field select:focus {
+.criteria-field select {
+  cursor: pointer;
+}
+
+.criteria-field select:focus,
+.criteria-field input[type="date"]:focus {
   border-color: #66AFE9;
   box-shadow: 0 0 4px rgba(102,175,233,0.4);
 }
@@ -1081,4 +1086,306 @@ tbody tr:hover { background: #F9F9F9; }
 
 .help-btn:hover {
   background-color: #31B0D5;
+}
+
+/* ══════════════════════════════════════
+   CBO & CO OVERVIEW STYLES
+   ══════════════════════════════════════ */
+#page-cbo-overview .tab-btn {
+  background: #7A9BB8;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  margin-right: 2px;
+  transition: background 0.2s;
+}
+#page-cbo-overview .tab-btn:hover {
+  background: #6B8BA8;
+}
+#page-cbo-overview .tab-btn.active {
+  background: #4A7BD5;
+  color: #fff;
+  font-weight: 600;
+}
+
+.cbo-map-wrapper {
+  position: relative;
+  background: #aadaff;
+  border: 1px solid #ccc;
+  height: 250px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cbo-map-placeholder {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(45deg, #dfd8d0, #dfd8d0 10px, #e5ded7 10px, #e5ded7 20px);
+}
+.cbo-map-alert {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #999;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 16px;
+  width: 80%;
+  max-width: 320px;
+  z-index: 10;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #333;
+}
+.cbo-map-alert-btn {
+  margin-top: 12px;
+  text-align: right;
+}
+
+.co-center-item, .cbo-group-item {
+  transition: all 0.2s;
+}
+.co-center-item:hover, .cbo-group-item:hover {
+  transform: translateX(3px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border-color: var(--topbar-accent) !important;
+}
+
+/* ══════════════════════════════════════
+   REPAYMENT MATRIX – DARK THEME STYLING
+   ══════════════════════════════════════ */
+.matrix-container {
+  color-scheme: only dark;
+  background-color: #0b0f19;
+  color: #f0f6fc;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  margin-bottom: 30px;
+  border: 1px solid #30363d;
+}
+
+.matrix-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ff9900;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.matrix-subtitle {
+  font-size: 14px;
+  color: #8b949e;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .matrix-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.matrix-table-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.matrix-dark-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #c9d1d9;
+}
+
+.matrix-dark-table th {
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-weight: 600;
+  padding: 10px 12px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.matrix-dark-table td {
+  border: 1px solid #30363d;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.matrix-dark-table tr.group-header {
+  background-color: #1f242c;
+  font-weight: bold;
+}
+
+.matrix-dark-table tr.group-header td {
+  color: #ff9900;
+  font-size: 14px;
+}
+
+.matrix-dark-table tr:hover:not(.group-header) {
+  background-color: #1f242c;
+}
+
+.calculator-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.calc-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff9900;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 8px;
+  margin: 0;
+}
+
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8b949e;
+}
+
+.calc-field input[type="range"] {
+  width: 100%;
+  accent-color: #ff9900;
+  background: #30363d;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.calc-field input[type="number"] {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #f0f6fc;
+  border-radius: 4px;
+  height: 36px;
+  padding: 0 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.calc-field input[type="number"]:focus {
+  border-color: #ff9900;
+}
+
+.calc-output-box {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calc-output-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calc-output-label {
+  font-size: 13px;
+  color: #8b949e;
+}
+
+.calc-output-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f0f6fc;
+}
+
+.calc-output-value.highlight-green {
+  color: #3fb950;
+  font-size: 18px;
+}
+
+.calc-output-value.highlight-orange {
+  color: #f0883e;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Button style for Matrix View on New Loans page */
+.btn-matrix-view {
+  background: #0b0f19;
+  border: 1px solid #30363d;
+  color: #ff9900;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.btn-matrix-view:hover {
+  background: #161b22;
+  border-color: #ff9900;
+}
+
+/* Suggestions Autocomplete Styles */
+.suggestions-dropdown {
+  position: absolute;
+  background: var(--white);
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  top: 36px;
+  left: 110px; /* Aligns with input field */
+  width: 200px;
+}
+
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+  border-bottom: 1px solid #EEEEEE;
+  text-align: left;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #F5F5F5;
+  color: var(--topbar-accent);
 }
