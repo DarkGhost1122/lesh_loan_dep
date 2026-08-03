@@ -5810,22 +5810,22 @@
     const tbody = document.getElementById('gp-tbody');
     const makePaymentContainer = document.getElementById('gp-make-payment-container');
 
-    if (!cbo) {
-      alert('Please select a CBO.');
+    if (!branch) {
+      alert('Please select a Branch.');
       return;
     }
 
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">Loading payment sheet...</td></tr>';
     makePaymentContainer.style.display = 'none';
 
-    let url = `/api/group-payments/sheet?cbo=${encodeURIComponent(cbo)}`;
-    if (branch) url += `&branch=${encodeURIComponent(branch)}`;
+    let url = `/api/group-payments/sheet?branch=${encodeURIComponent(branch)}`;
+    if (cbo) url += `&cbo=${encodeURIComponent(cbo)}`;
     if (loanType) url += `&loan_type=${encodeURIComponent(loanType)}`;
 
     apiFetch(url)
       .then(data => {
         if (!data.success || !data.loans || data.loans.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">No active loans found for this CBO.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:16px;color:#888;">No active loans found.</td></tr>';
           return;
         }
 
