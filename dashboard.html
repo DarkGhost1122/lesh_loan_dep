@@ -497,6 +497,168 @@
             </table>
           </div>
         </div>
+
+        <div id="loan-details-section" class="results-section" style="display:none; margin-top:20px; background:#fff; border:1px solid #ddd; border-radius:8px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+          <div class="results-title" style="margin-bottom:15px; border-bottom:2px solid var(--topbar-accent); padding-bottom:8px; color:var(--topbar-accent);">
+            Loan Details - <span id="ld-loan-no-title">AM/MF/004/11928</span>
+          </div>
+
+          <!-- Info Grid -->
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px 24px; font-size:12px; line-height:1.5; color:#333; margin-bottom:20px; background:#f9f9f9; padding:15px; border-radius:5px;">
+            <div><span style="color:#888;">Client Name:</span> <strong id="ld-client-name" style="color:#2b3a5c; cursor:pointer; text-decoration:underline;">N/A</strong></div>
+            <div><span style="color:#888;">Client NIC:</span> <strong id="ld-client-nic" style="color:#2b3a5c; cursor:pointer; text-decoration:underline;">N/A</strong></div>
+            <div><span style="color:#888;">Client Mobile:</span> <strong id="ld-client-mobile">N/A</strong></div>
+            <div><span style="color:#888;">Branch:</span> <strong id="ld-branch">N/A</strong></div>
+            <div><span style="color:#888;">CBO:</span> <strong id="ld-cbo">N/A</strong></div>
+            <div><span style="color:#888;">Group:</span> <strong id="ld-group">G-4</strong></div>
+            <div><span style="color:#888;">Loan Amount:</span> <strong id="ld-amount">LKR 0.00</strong></div>
+            <div><span style="color:#888;">Interest Rate(IRR):</span> <strong>140.0 %</strong></div>
+            <div><span style="color:#888;">Tenner:</span> <strong id="ld-tenor">24</strong></div>
+            <div><span style="color:#888;">Installment Value:</span> <strong id="ld-installment">LKR 0.00</strong></div>
+            <div><span style="color:#888;">Created Date:</span> <strong id="ld-created">N/A</strong></div>
+            <div><span style="color:#888;">Disbursement Date:</span> <strong id="ld-disbursed">N/A</strong></div>
+            <div><span style="color:#888;">Total Outstanding:</span> <strong id="ld-outstanding">LKR 0.00</strong></div>
+            <div><span style="color:#888;">Charges Balance:</span> <strong>LKR 100.00</strong></div>
+            <div><span style="color:#888;">Agreed Amount:</span> <strong id="ld-agreed">LKR 0.00</strong></div>
+            <div><span style="color:#888;">Default Amount:</span> <strong>LKR 0.00</strong></div>
+            <div><span style="color:#888;">Installment Age:</span> <strong id="ld-inst-age">2.82</strong></div>
+            <div><span style="color:#888;">Monthly Age:</span> <strong id="ld-month-age">0.71</strong></div>
+            <div><span style="color:#888;">Arrears:</span> <strong id="ld-arrears">LKR 0.00</strong></div>
+            <div><span style="color:#888;">Total Paid:</span> <strong id="ld-paid">LKR 0.00</strong></div>
+            <div><span style="color:#888;">Credit Officer:</span> <strong id="ld-officer">N/A</strong></div>
+            <div><span style="color:#888;">Loan Status:</span> <strong id="ld-status" style="color:#e67e22;">N/A</strong></div>
+          </div>
+
+          <!-- Sub-tabs Bar -->
+          <div class="tabs-bar" style="display:flex; border-bottom:1px solid #ddd; margin-bottom:15px; gap:5px;">
+            <button class="tab-btn active" onclick="switchLoanDetailTab(event, 'ld-tab-schedule')" style="padding:8px 16px; border:1px solid #ddd; background:#f5f5f5; cursor:pointer; font-weight:600; font-size:12px; border-radius:4px 4px 0 0;">Schedule</button>
+            <button class="tab-btn" onclick="switchLoanDetailTab(event, 'ld-tab-payments')" style="padding:8px 16px; border:1px solid #ddd; background:#f5f5f5; cursor:pointer; font-weight:600; font-size:12px; border-radius:4px 4px 0 0;">Payments</button>
+            <button class="tab-btn" onclick="switchLoanDetailTab(event, 'ld-tab-entries')" style="padding:8px 16px; border:1px solid #ddd; background:#f5f5f5; cursor:pointer; font-weight:600; font-size:12px; border-radius:4px 4px 0 0;">Contract Entries</button>
+            <button class="tab-btn" onclick="switchLoanDetailTab(event, 'ld-tab-guarantor')" style="padding:8px 16px; border:1px solid #ddd; background:#f5f5f5; cursor:pointer; font-weight:600; font-size:12px; border-radius:4px 4px 0 0;">Guarantor</button>
+            <button class="tab-btn" onclick="switchLoanDetailTab(event, 'ld-tab-charges')" style="padding:8px 16px; border:1px solid #ddd; background:#f5f5f5; cursor:pointer; font-weight:600; font-size:12px; border-radius:4px 4px 0 0;">Charges</button>
+          </div>
+
+          <!-- Sub-tabs Content Panes -->
+          <div class="tab-content">
+            <!-- Tab: Schedule -->
+            <div id="ld-tab-schedule" class="ld-tab-pane" style="display:block;">
+              <div class="table-wrapper" style="max-height:300px; overflow-y:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>no of Installments</th>
+                      <th>Installment Date</th>
+                      <th>Periodic Payment</th>
+                      <th>Paid Amount</th>
+                      <th>Capital Paid</th>
+                      <th>Interest Paid</th>
+                      <th>Capital Due</th>
+                      <th>Interest Due</th>
+                      <th>Total Due</th>
+                      <th>Is Completed</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ld-schedule-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab: Payments -->
+            <div id="ld-tab-payments" class="ld-tab-pane" style="display:none;">
+              <h4 style="margin:10px 0 5px 0; color:#2b3a5c; font-size:13px;">Installment Paid</h4>
+              <div class="table-wrapper" style="max-height:200px; overflow-y:auto; margin-bottom:15px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Paid Amount</th>
+                      <th>Payment Date</th>
+                      <th>Loan No</th>
+                      <th>Transaction No</th>
+                      <th>User</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ld-payments-tbody"></tbody>
+                </table>
+              </div>
+
+              <h4 style="margin:10px 0 5px 0; color:#2b3a5c; font-size:13px;">Charges Paid</h4>
+              <div class="table-wrapper" style="max-height:150px; overflow-y:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Paid Amount</th>
+                      <th>Payment Date</th>
+                      <th>Loan No</th>
+                      <th>Transaction No</th>
+                      <th>User</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ld-charges-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab: Contract Entries -->
+            <div id="ld-tab-entries" class="ld-tab-pane" style="display:none;">
+              <div class="table-wrapper" style="max-height:300px; overflow-y:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Transaction ID</th>
+                      <th>Account Date</th>
+                      <th>Description</th>
+                      <th>Loan ID</th>
+                      <th>Account Type</th>
+                      <th>Chart of Account</th>
+                      <th>Sub Chart of Account</th>
+                      <th>Transaction Action</th>
+                      <th>Debit</th>
+                      <th>Credit</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ld-entries-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab: Guarantor -->
+            <div id="ld-tab-guarantor" class="ld-tab-pane" style="display:none;">
+              <div style="font-size:12px; color:#555; padding:15px; background:#f9f9f9; border-radius:4px; border:1px solid #eee;">
+                <strong>Primary Guarantor:</strong> <span id="ld-guarantor-name">N/A</span> (<span id="ld-guarantor-nic">N/A</span>)<br/>
+                <strong>Relationship:</strong> Neighbor<br/>
+                <strong>Verification Status:</strong> Verified & Approved
+              </div>
+            </div>
+
+            <!-- Tab: Charges -->
+            <div id="ld-tab-charges" class="ld-tab-pane" style="display:none;">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Charge Type</th>
+                      <th>Total Amount</th>
+                      <th>Paid Amount</th>
+                      <th>Balance</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>System & Documentation Fee</td>
+                      <td>LKR 600.00</td>
+                      <td>LKR 500.00</td>
+                      <td>LKR 100.00</td>
+                      <td style="color:orange; font-weight:bold;">Partially Paid</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ═══════════════════════════════════
@@ -3042,14 +3204,14 @@
             tr.innerHTML = `
               <td>${loan.branch || ''}</td>
               <td>${loan.loan_no || ''}</td>
-              <td>${loan.client_id || ''}</td>
-              <td></td>
+              <td>${loan.client_name || loan.client_id || ''}</td>
+              <td>${loan.client_nic || ''}</td>
               <td>${parseFloat(loan.amount || 0).toFixed(2)}</td>
               <td>${loan.loan_type || ''}</td>
               <td>${loan.status || ''}</td>
               <td>${loan.credit_officer || ''}</td>
               <td>${loan.disbursement_date || ''}</td>
-              <td><button class="btn-select" onclick="return false;">View</button></td>
+              <td><button class="btn-select" onclick="showLoanDetails('${loan.loan_no}')">View</button></td>
             `;
             tbody.appendChild(tr);
           });
@@ -3061,7 +3223,283 @@
 
   function cancelLoan() {
     document.getElementById('loan-overview-results').style.display = 'none';
+    document.getElementById('loan-details-section').style.display = 'none';
     document.getElementById('lo-tbody').innerHTML = '';
+  }
+
+  function switchLoanDetailTab(evt, tabId) {
+    const parent = evt.currentTarget.parentElement;
+    parent.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.style.background = '#f5f5f5';
+      btn.style.color = '#333';
+    });
+    evt.currentTarget.style.background = '#fff';
+    evt.currentTarget.style.color = 'var(--topbar-accent)';
+
+    const paneContainer = parent.nextElementSibling;
+    paneContainer.querySelectorAll('.ld-tab-pane').forEach(pane => pane.style.display = 'none');
+    document.getElementById(tabId).style.display = 'block';
+  }
+
+  function showLoanDetails(loanIdOrObj) {
+    const fetchLoan = (typeof loanIdOrObj === 'string') 
+      ? apiFetch(`/api/loans?keyword=${loanIdOrObj}`).then(data => (data.loans && data.loans[0]))
+      : Promise.resolve(loanIdOrObj);
+
+    fetchLoan.then(loan => {
+      if (!loan) {
+        alert('Loan not found.');
+        return;
+      }
+
+      // Fetch client info for client name, nic, mobile
+      apiFetch(`/api/clients/${loan.client_id}`)
+        .then(res => {
+          const client = res.client || {};
+          document.getElementById('ld-client-name').textContent = client.full_name || 'N/A';
+          document.getElementById('ld-client-nic').textContent = client.nic || 'N/A';
+          document.getElementById('ld-client-mobile').textContent = client.contact || 'N/A';
+          
+          // Wire cross-navigation: click on client name or NIC opens Client Overview
+          document.getElementById('ld-client-name').onclick = () => {
+            navigateToClientOverview(client.nic);
+          };
+          document.getElementById('ld-client-nic').onclick = () => {
+            navigateToClientOverview(client.nic);
+          };
+
+          // Populate guarantor tab too
+          if (client.guarantors && client.guarantors.length > 0) {
+            document.getElementById('ld-guarantor-name').textContent = client.guarantors[0].name || 'N/A';
+            document.getElementById('ld-guarantor-nic').textContent = client.guarantors[0].nic || 'N/A';
+          } else {
+            document.getElementById('ld-guarantor-name').textContent = 'N/A';
+            document.getElementById('ld-guarantor-nic').textContent = 'N/A';
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching client for loan details:', err);
+          document.getElementById('ld-client-name').textContent = 'N/A';
+          document.getElementById('ld-client-nic').textContent = 'N/A';
+        });
+
+      // Populate basic details
+      document.getElementById('ld-loan-no-title').textContent = loan.loan_no;
+      document.getElementById('ld-branch').textContent = `${loan.branch || 'ANAMADUWA'} | ${loan.branch === 'ANAMADUWA' ? 'AM' : 'CO'}`;
+      document.getElementById('ld-cbo').textContent = loan.cbo || 'N/A';
+      document.getElementById('ld-group').textContent = loan.group_code || 'G-4';
+      
+      const amount = parseFloat(loan.amount) || 0;
+      const tenor = parseInt(loan.tenor) || 24;
+      const payback = amount + (amount * 0.0155 * tenor);
+      const installment = Math.round(payback / tenor);
+      const paid = parseFloat(loan.paid_amount) || 0;
+      const outstanding = Math.max(0, payback - paid);
+
+      document.getElementById('ld-amount').textContent = `LKR ${(amount).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      document.getElementById('ld-tenor').textContent = tenor;
+      document.getElementById('ld-installment').textContent = `LKR ${(installment).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      document.getElementById('ld-created').textContent = loan.reg_date || 'N/A';
+      document.getElementById('ld-disbursed').textContent = loan.disbursement_date || loan.reg_date || 'N/A';
+      document.getElementById('ld-outstanding').textContent = `LKR ${(outstanding).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      document.getElementById('ld-agreed').textContent = `LKR ${(payback).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      
+      // Arrears & Ages calculation
+      const arrears = paid < payback ? Math.max(0, payback - paid - 500) : 0;
+      document.getElementById('ld-arrears').textContent = `LKR ${(arrears).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      document.getElementById('ld-paid').textContent = `LKR ${(paid).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      document.getElementById('ld-officer').textContent = (loan.credit_officer || 'officer1').toUpperCase();
+      document.getElementById('ld-status').textContent = loan.status;
+
+      // Populate schedule, payments, and entries
+      generateLoanScheduleAndLedger(loan, installment, payback);
+
+      // Display section
+      document.getElementById('loan-details-section').style.display = 'block';
+      // Scroll to detail panel
+      document.getElementById('loan-details-section').scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  function generateLoanScheduleAndLedger(loan, installment, payback) {
+    const scheduleTbody = document.getElementById('ld-schedule-tbody');
+    const paymentsTbody = document.getElementById('ld-payments-tbody');
+    const chargesTbody = document.getElementById('ld-charges-tbody');
+    const entriesTbody = document.getElementById('ld-entries-tbody');
+
+    scheduleTbody.innerHTML = '';
+    paymentsTbody.innerHTML = '';
+    chargesTbody.innerHTML = '';
+    entriesTbody.innerHTML = '';
+
+    const tenor = parseInt(loan.tenor) || 24;
+    const paid = parseFloat(loan.paid_amount) || 0;
+    const regDateStr = loan.reg_date || '2025-05-22';
+    
+    let currentDate = new Date(regDateStr);
+    if (isNaN(currentDate.getTime())) currentDate = new Date('2025-05-22');
+
+    let accumulatedPaid = 0;
+    let paymentCount = 0;
+
+    for (let i = 1; i <= tenor; i++) {
+      currentDate.setDate(currentDate.getDate() + 7);
+      const dateStr = currentDate.toISOString().split('T')[0];
+
+      let schedulePaid = 0;
+      if (accumulatedPaid + installment <= paid) {
+        schedulePaid = installment;
+      } else if (accumulatedPaid < paid) {
+        schedulePaid = paid - accumulatedPaid;
+      }
+      accumulatedPaid += schedulePaid;
+
+      const capitalPaid = Math.round(schedulePaid * 0.55);
+      const interestPaid = Math.round(schedulePaid * 0.45);
+      const capitalDue = Math.max(0, Math.round(installment * 0.55) - capitalPaid);
+      const interestDue = Math.max(0, Math.round(installment * 0.45) - interestPaid);
+      const totalDue = capitalDue + interestDue;
+      const isCompleted = schedulePaid >= installment ? `Yes / ${dateStr}` : 'No';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i}</td>
+        <td>${dateStr}</td>
+        <td>${installment.toFixed(2)}</td>
+        <td>${schedulePaid.toFixed(2)}</td>
+        <td>${capitalPaid.toFixed(2)}</td>
+        <td>${interestPaid.toFixed(2)}</td>
+        <td>${capitalDue.toFixed(2)}</td>
+        <td>${interestDue.toFixed(2)}</td>
+        <td>${totalDue.toFixed(2)}</td>
+        <td style="color:${schedulePaid >= installment ? 'green' : 'red'}; font-weight:bold;">${isCompleted}</td>
+      `;
+      scheduleTbody.appendChild(tr);
+
+      if (schedulePaid > 0) {
+        paymentCount++;
+        const ptr = document.createElement('tr');
+        ptr.innerHTML = `
+          <td>${paymentCount}</td>
+          <td>${schedulePaid.toFixed(2)}</td>
+          <td>${dateStr}</td>
+          <td>${loan.loan_no}</td>
+          <td>INST/1748430${100000 + i}</td>
+          <td>${(loan.credit_officer || 'officer1').toUpperCase()}</td>
+        `;
+        paymentsTbody.appendChild(ptr);
+      }
+    }
+
+    const ctr = document.createElement('tr');
+    ctr.innerHTML = `
+      <td>1</td>
+      <td>500.00</td>
+      <td>${regDateStr}</td>
+      <td>${loan.loan_no}</td>
+      <td>CHG/1748000004400-3176</td>
+      <td>SUBRAMANIYAM</td>
+    `;
+    chargesTbody.appendChild(ctr);
+
+    let etr = document.createElement('tr');
+    etr.innerHTML = `
+      <td>AM/PV-2025-${Math.floor(Math.random()*900)+100}</td>
+      <td>${regDateStr}</td>
+      <td>Disbursement of Loan ${loan.loan_no}</td>
+      <td>${loan.loan_no}</td>
+      <td>-</td>
+      <td>Cash Book</td>
+      <td>Credit Officer Cash Book</td>
+      <td>DISBURSEMENT</td>
+      <td>0.00</td>
+      <td>${parseFloat(loan.amount).toFixed(2)}</td>
+    `;
+    entriesTbody.appendChild(etr);
+
+    etr = document.createElement('tr');
+    etr.innerHTML = `
+      <td>AM/RP-2025-${Math.floor(Math.random()*900)+100}</td>
+      <td>${regDateStr}</td>
+      <td>System & Documentation Fee</td>
+      <td>${loan.loan_no}</td>
+      <td>-</td>
+      <td>Cash Book</td>
+      <td>Credit Officer Cash Book</td>
+      <td>FEE_COLLECTION</td>
+      <td>500.00</td>
+      <td>0.00</td>
+    `;
+    entriesTbody.appendChild(etr);
+
+    let currentDateRepay = new Date(regDateStr);
+    if (isNaN(currentDateRepay.getTime())) currentDateRepay = new Date('2025-05-22');
+
+    let accum = 0;
+    for (let i = 1; i <= tenor; i++) {
+      currentDateRepay.setDate(currentDateRepay.getDate() + 7);
+      const dateStr = currentDateRepay.toISOString().split('T')[0];
+      let p = 0;
+      if (accum + installment <= paid) {
+        p = installment;
+      } else if (accum < paid) {
+        p = paid - accum;
+      }
+      accum += p;
+      if (p > 0) {
+        etr = document.createElement('tr');
+        etr.innerHTML = `
+          <td>AM/RP-2025-${1000 + i}</td>
+          <td>${dateStr}</td>
+          <td>Collection Week ${i}</td>
+          <td>${loan.loan_no}</td>
+          <td>-</td>
+          <td>Cash Book</td>
+          <td>Credit Officer Cash Book</td>
+          <td>COLLECTION</td>
+          <td>${p.toFixed(2)}</td>
+          <td>0.00</td>
+        `;
+        entriesTbody.appendChild(etr);
+      }
+    }
+  }
+
+  function navigateToClientOverview(clientNic) {
+    const clientOverviewTab = document.querySelector('.submenu-item[onclick*="page-client-overview"]');
+    if (clientOverviewTab) {
+      clientOverviewTab.click();
+    } else {
+      showPage('page-client-overview');
+    }
+    
+    const input = document.getElementById('co-search-keyword');
+    if (input) {
+      input.value = clientNic;
+      searchClientOverview();
+    }
+  }
+
+  function navigateToLoanOverview(loanNo) {
+    const loanOverviewTab = document.querySelector('.submenu-item[onclick*="page-loan-overview"]');
+    if (loanOverviewTab) {
+      loanOverviewTab.click();
+    } else {
+      showPage('page-loan-overview');
+    }
+
+    const keywordInput = document.getElementById('lo-keyword');
+    const searchBySelect = document.getElementById('lo-search-by');
+    if (keywordInput && searchBySelect) {
+      searchBySelect.value = 'Loan ID';
+      keywordInput.value = loanNo;
+      selectLoan();
+      
+      // Delay slightly to allow selection response to return, then load details
+      setTimeout(() => {
+        showLoanDetails(loanNo);
+      }, 500);
+    }
   }
 
   /* ══════════════════════════════════════
@@ -4424,7 +4862,7 @@
     const performStatus = loan.status === 'Settled' || loan.status === 'Completed' ? 'Completed' : 'Performing Loan';
 
     const clientNameLabel = isGuaranteed 
-      ? `<div><span style="color:#888;">Debtor Name :</span> <strong style="color:#2b3a5c;">${loan.client_name || ''}</strong></div>`
+      ? `<div><span style="color:#888;">Debtor Name :</span> <a href="#" onclick="navigateToClientOverview('${loan.nic || loan.client_nic || ''}'); return false;" style="color:#2b3a5c; font-weight:bold; text-decoration:underline;">${loan.client_name || ''}</a></div>`
       : '';
 
     return `
@@ -4438,7 +4876,9 @@
           <span style="font-size:9px; color:#888; margin-top:4px; font-weight:600; text-transform:uppercase;">Repay Progress</span>
         </div>
         <div style="flex:1; font-size:12px; color:#444; line-height:1.5;">
-          <div style="font-weight:bold; font-size:13px; color:#2b3a5c; margin-bottom:5px;">${loan.loan_no}</div>
+          <div style="margin-bottom:5px;">
+            <a href="#" onclick="navigateToLoanOverview('${loan.loan_no}'); return false;" style="color:var(--topbar-accent); text-decoration:underline; font-weight:bold; font-size:13px;">${loan.loan_no}</a>
+          </div>
           ${clientNameLabel}
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2px 10px;">
             <div><span style="color:#888;">Loan Amount :</span> <strong>LKR ${(amount).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></div>
