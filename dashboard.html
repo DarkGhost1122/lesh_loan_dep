@@ -966,40 +966,15 @@
 
               <!-- Tab: Contracts -->
               <div id="tab-contracts" class="tab-pane">
-                <div class="table-wrapper">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Loan No</th>
-                        <th>Product</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                      </tr>
-                    </thead>
-                    <tbody id="co-contracts-tbody">
-                      <tr><td colspan="5" style="text-align:center;padding:12px;color:#888;">No contracts found.</td></tr>
-                    </tbody>
-                  </table>
+                <div id="co-contracts-container" style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
+                  <div style="text-align:center;padding:24px;color:#888;">No contracts found.</div>
                 </div>
               </div>
 
               <!-- Tab: Guaranteed Contracts -->
               <div id="tab-guaranteed" class="tab-pane">
-                <div class="table-wrapper">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Loan No</th>
-                        <th>Client Name</th>
-                        <th>Amount</th>
-                        <th>Guarantor Level</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No guaranteed contracts.</td></tr>
-                    </tbody>
-                  </table>
+                <div id="co-guaranteed-container" style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
+                  <div style="text-align:center;padding:24px;color:#888;">No guaranteed contracts.</div>
                 </div>
               </div>
 
@@ -1008,7 +983,48 @@
                 <div style="font-size:13px; color:#555;">No business profile records found for this client.</div>
               </div>
               <div id="tab-family" class="tab-pane">
-                <div style="font-size:13px; color:#555;">No family detail records found for this client.</div>
+                <div class="inline-bank-form" id="co-family-form" style="display:none; margin-bottom:15px; background:#f9f9f9; padding:15px; border:1px solid #ddd; border-radius:5px; gap:15px; align-items:flex-end;">
+                  <div class="inline-field" style="flex:2;">
+                    <label>Member Name</label>
+                    <input type="text" id="co-family-name" placeholder="Name" style="height:32px; border:1px solid #ccc; border-radius:3px; padding:0 8px; width:100%;" />
+                  </div>
+                  <div class="inline-field" style="flex:1;">
+                    <label>Relationship</label>
+                    <select id="co-family-rel" style="height:32px; border:1px solid #ccc; border-radius:3px; padding:0 8px; width:100%;">
+                      <option value="Spouse">Spouse</option>
+                      <option value="Son">Son</option>
+                      <option value="Daughter">Daughter</option>
+                      <option value="Mother">Mother</option>
+                      <option value="Father">Father</option>
+                      <option value="Brother">Brother</option>
+                      <option value="Sister">Sister</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div style="display:flex; gap:10px;">
+                    <button class="btn btn-green" onclick="saveFamilyMember()" style="height:32px;">Save</button>
+                    <button class="btn btn-grey" onclick="toggleFamilyForm(false)" style="height:32px;">Cancel</button>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:15px;" id="co-family-btn-row">
+                  <button class="btn btn-green" onclick="toggleFamilyForm(true)" style="font-size:13px; padding:6px 12px;">+ Add Family Details</button>
+                </div>
+
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Member Name</th>
+                        <th>Relationship</th>
+                        <th style="width:100px; text-align:center;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="co-family-tbody">
+                      <tr><td colspan="3" style="text-align:center;padding:12px;color:#888;">No family detail records found for this client.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <div id="tab-docs" class="tab-pane">
                 <div style="font-size:13px; color:#555;">No uploaded files or documents found.</div>
@@ -1471,7 +1487,6 @@
             <div class="criteria-field" style="position: relative;">
               <label>NIC</label>
               <input type="text" id="nm-search-nic" placeholder="NIC" style="height: 32px; border: 1px solid #CCCCCC; border-radius: 3px; padding: 0 8px; min-width: 200px;" autocomplete="off" />
-              <div id="nm-nic-suggestions" class="suggestions-dropdown" style="display:none;"></div>
             </div>
             <div class="criteria-field">
               <label>Client Name</label>
@@ -3284,8 +3299,26 @@
     });
 
     // Load Groups List
+    // Load Groups List
     const groupsContainer = document.getElementById('cbo-groups-list');
     groupsContainer.innerHTML = '';
+    
+    // Add "All Clients" item at the very top
+    const allClientsItem = document.createElement('div');
+    allClientsItem.className = 'cbo-group-item';
+    allClientsItem.style.padding = '8px 12px';
+    allClientsItem.style.background = '#f9f9f9';
+    allClientsItem.style.border = '1px solid #eee';
+    allClientsItem.style.borderRadius = '4px';
+    allClientsItem.style.cursor = 'pointer';
+    allClientsItem.style.fontSize = '12px';
+    allClientsItem.innerHTML = `<strong>All Clients</strong>`;
+    allClientsItem.addEventListener('click', () => {
+      document.querySelectorAll('.cbo-group-item').forEach(el => el.style.borderColor = '#eee');
+      allClientsItem.style.borderColor = 'var(--topbar-accent)';
+      showCBOGroupClients('All Clients');
+    });
+    groupsContainer.appendChild(allClientsItem);
     
     // Add groups from response
     groups.forEach(g => {
@@ -3308,7 +3341,7 @@
         </div>
         <button style="background:none; border:none; color:#999; cursor:pointer;"><svg style="width:12px; height:12px; fill:currentColor;" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
       `;
-
+ 
       gItem.addEventListener('click', (e) => {
         // Highlight active group
         document.querySelectorAll('.cbo-group-item').forEach(el => el.style.borderColor = '#eee');
@@ -3317,7 +3350,7 @@
       });
       groupsContainer.appendChild(gItem);
     });
-
+ 
     // Add "No Group Clients" item
     const noGroupItem = document.createElement('div');
     noGroupItem.className = 'cbo-group-item';
@@ -3334,41 +3367,44 @@
       showCBOGroupClients('No Group Clients');
     });
     groupsContainer.appendChild(noGroupItem);
-
+ 
     // Switch to first tab groups
     switchCBOOverviewTab(null, 'cbo-tab-groups');
-
-    // Default select first group if exists
-    if (groups.length > 0) {
-      setTimeout(() => {
-        const firstGrp = groupsContainer.firstElementChild;
-        if (firstGrp) firstGrp.click();
-      }, 50);
-    } else {
-      noGroupItem.click();
-    }
-
+ 
+    // Default select All Clients item
+    setTimeout(() => {
+      allClientsItem.click();
+    }, 50);
+ 
     document.getElementById('cbo-overview-results').style.display = '';
   }
-
+ 
   function showCBOGroupClients(groupCode) {
     const tbody = document.getElementById('cbo-group-clients-tbody');
     tbody.innerHTML = '';
-    const clients = currentCBOClientsMap[groupCode] || [];
+    
+    let clients = [];
+    if (groupCode === 'All Clients') {
+      Object.keys(currentCBOClientsMap).forEach(key => {
+        clients.push(...currentCBOClientsMap[key]);
+      });
+    } else {
+      clients = currentCBOClientsMap[groupCode] || [];
+    }
     
     if (clients.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888; padding:15px;">No clients in this group.</td></tr>`;
       return;
     }
-
+ 
     clients.forEach((c, idx) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="text-align:center;">${idx + 1}</td>
         <td>${c.full_name}</td>
         <td>${c.nic}</td>
-        <td>${c.contact}</td>
-        <td>${c.cbo_position}</td>
+        <td>${c.contact || ''}</td>
+        <td>${c.cbo_position || 'Member'}</td>
         <td><button class="btn-select" style="background:#5bc0de; padding: 2px 8px;" onclick="return false;">Select</button></td>
       `;
       tbody.appendChild(tr);
@@ -3879,6 +3915,13 @@
         });
       });
       loadDropdownData('ANAMADUWA');
+      
+      // Initialize all autocompletes globally
+      initAutocompleteForFields('nm-search-nic', 'nm-search-name');
+      initAutocompleteForFields('co-search-keyword', 'co-search-name');
+      initAutocompleteForFields('cgm-nic', 'cgm-clientname');
+      initAutocompleteForFields('cm-nic', 'cm-clientname');
+      initAutocompleteForFields('ns-nic', 'ns-client-name');
     });
   }
 
@@ -4088,7 +4131,9 @@
     }
 
     renderBankAccountsTable(client.bank_accounts || []);
-    loadOverviewContracts(client.id);
+    renderFamilyTable(client.family_members || []);
+    toggleFamilyForm(false);
+    loadOverviewContracts(client.id, client.nic);
 
     document.getElementById('co-details-box').style.display = '';
   }
@@ -4233,31 +4278,189 @@
     });
   }
 
-  function loadOverviewContracts(clientId) {
+  function toggleFamilyForm(show) {
+    const form = document.getElementById('co-family-form');
+    const btnRow = document.getElementById('co-family-btn-row');
+    if (show) {
+      form.style.display = 'flex';
+      btnRow.style.display = 'none';
+      document.getElementById('co-family-name').value = '';
+      document.getElementById('co-family-rel').value = 'Spouse';
+    } else {
+      form.style.display = 'none';
+      btnRow.style.display = 'block';
+    }
+  }
+
+  function renderFamilyTable(members) {
+    const tbody = document.getElementById('co-family-tbody');
+    tbody.innerHTML = '';
+    if (!members || members.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:12px;color:#888;">No family detail records found for this client.</td></tr>';
+      return;
+    }
+    members.forEach((m, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${m.member_name}</td>
+        <td>${m.relationship}</td>
+        <td style="text-align:center;"><button class="btn-delete-bank" onclick="deleteFamilyMember(${idx})">Delete</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function saveFamilyMember() {
+    const clientId = document.getElementById('co-client-id').value;
+    if (!clientId) return;
+
+    const name = document.getElementById('co-family-name').value.trim();
+    const rel = document.getElementById('co-family-rel').value;
+
+    if (!name) {
+      alert('Please enter family member name.');
+      return;
+    }
+
+    apiFetch(`/api/clients/${clientId}/family-members`, {
+      method: 'POST',
+      body: JSON.stringify({ member_name: name, relationship: rel })
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Family member added successfully.');
+        toggleFamilyForm(false);
+        if (currentOverviewClient) currentOverviewClient.family_members = data.family_members;
+        renderFamilyTable(data.family_members || []);
+      } else {
+        alert(data.message || 'Failed to add family member.');
+      }
+    })
+    .catch(err => {
+      alert('Error: ' + err);
+    });
+  }
+
+  function deleteFamilyMember(idx) {
+    const clientId = document.getElementById('co-client-id').value;
+    if (!clientId) return;
+    if (!confirm('Are you sure you want to delete this family member?')) return;
+
+    apiFetch(`/api/clients/${clientId}/family-members/${idx}`, {
+      method: 'DELETE'
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Family member deleted.');
+        if (currentOverviewClient) currentOverviewClient.family_members = data.family_members;
+        renderFamilyTable(data.family_members || []);
+      } else {
+        alert(data.message || 'Failed to delete family member.');
+      }
+    })
+    .catch(err => {
+      alert('Error: ' + err);
+    });
+  }
+
+  function loadOverviewContracts(clientId, clientNic) {
+    const contractsContainer = document.getElementById('co-contracts-container');
+    const guaranteedContainer = document.getElementById('co-guaranteed-container');
+
+    contractsContainer.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">Loading contracts...</div>';
+    guaranteedContainer.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">Loading guaranteed contracts...</div>';
+
+    // 1. Fetch own contracts
     apiFetch(`/api/loans?keyword=${clientId}`)
       .then(data => {
         const loans = data.loans || [];
-        const tbody = document.getElementById('co-contracts-tbody');
-        tbody.innerHTML = '';
+        contractsContainer.innerHTML = '';
         if (loans.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:12px;color:#888;">No contracts found.</td></tr>';
+          contractsContainer.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">No contracts found.</div>';
           return;
         }
+
         loans.forEach(loan => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${loan.loan_no}</td>
-            <td>${loan.loan_type || 'Micro Finance'}</td>
-            <td>${parseFloat(loan.amount).toFixed(2)}</td>
-            <td><span style="font-weight:600;color:${loan.status==='Settled'?'green':'orange'}">${loan.status}</span></td>
-            <td>${loan.reg_date || ''}</td>
-          `;
-          tbody.appendChild(tr);
+          contractsContainer.innerHTML += getContractCardHtml(loan);
         });
       })
       .catch(err => {
         console.error('Error loading client contracts:', err);
+        contractsContainer.innerHTML = '<div style="text-align:center;padding:24px;color:#888;color:red;">Error loading contracts.</div>';
       });
+
+    // 2. Fetch guaranteed contracts
+    apiFetch(`/api/loans?guarantor_id=${clientNic || clientId}`)
+      .then(data => {
+        const loans = data.loans || [];
+        guaranteedContainer.innerHTML = '';
+        if (loans.length === 0) {
+          guaranteedContainer.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">No guaranteed contracts.</div>';
+          return;
+        }
+
+        loans.forEach(loan => {
+          guaranteedContainer.innerHTML += getContractCardHtml(loan, true);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading guaranteed contracts:', err);
+        guaranteedContainer.innerHTML = '<div style="text-align:center;padding:24px;color:#888;color:red;">Error loading guaranteed contracts.</div>';
+      });
+  }
+
+  function getContractCardHtml(loan, isGuaranteed = false) {
+    const amount = parseFloat(loan.amount) || 0.0;
+    const paid = parseFloat(loan.paid_amount) || 0.0;
+    const tenor = parseInt(loan.tenor) || 24;
+    const payback = amount + (amount * 0.0155 * tenor);
+    const installment = Math.round(payback / tenor);
+
+    const progressPercent = payback > 0 ? Math.min(100, Math.max(0, (paid / payback) * 100)) : 0;
+    const progressFormatted = progressPercent.toFixed(2);
+    const dashArray = `${progressFormatted}, 100`;
+
+    const displayStatus = loan.status === 'Settled' || loan.status === 'Completed' ? 'Completed' : 'Disbursed';
+    const performStatus = loan.status === 'Settled' || loan.status === 'Completed' ? 'Completed' : 'Performing Loan';
+
+    const clientNameLabel = isGuaranteed 
+      ? `<div><span style="color:#888;">Debtor Name :</span> <strong style="color:#2b3a5c;">${loan.client_name || ''}</strong></div>`
+      : '';
+
+    return `
+      <div class="contract-card" style="display:flex; align-items:center; background:#fff; border:1px solid #ddd; border-radius:8px; padding:15px; gap:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:10px;">
+        <div style="display:flex; flex-direction:column; align-items:center; width:100px; flex-shrink:0;">
+          <svg width="80" height="80" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+            <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#f0f2f5" stroke-width="3"/>
+            <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#d93d59" stroke-width="3" stroke-dasharray="${dashArray}"/>
+            <text x="18" y="20.5" fill="#333" font-size="6" font-weight="bold" text-anchor="middle" style="transform: rotate(90deg); transform-origin: 18px 18px;">${progressFormatted}%</text>
+          </svg>
+          <span style="font-size:9px; color:#888; margin-top:4px; font-weight:600; text-transform:uppercase;">Repay Progress</span>
+        </div>
+        <div style="flex:1; font-size:12px; color:#444; line-height:1.5;">
+          <div style="font-weight:bold; font-size:13px; color:#2b3a5c; margin-bottom:5px;">${loan.loan_no}</div>
+          ${clientNameLabel}
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2px 10px;">
+            <div><span style="color:#888;">Loan Amount :</span> <strong>LKR ${(amount).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></div>
+            <div><span style="color:#888;">Installment Value :</span> <strong>LKR ${(installment).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></div>
+            <div><span style="color:#888;">Tenner :</span> <strong>${tenor}</strong></div>
+            <div><span style="color:#888;">Compounding Frequency :</span> <strong>Weekly</strong></div>
+            <div><span style="color:#888;">Registered :</span> <strong>${loan.reg_date || 'N/A'}</strong></div>
+            <div><span style="color:#888;">Loan Status :</span> <strong style="color:${displayStatus==='Completed'?'#28a745':'#f0ad4e'};">${displayStatus}</strong></div>
+            <div style="grid-column: span 2;"><span style="color:#888;">Loan Performing Status :</span> <strong style="color:#28a745;">${performStatus}</strong></div>
+            <div style="grid-column: span 2;"><span style="color:#888;">Branch :</span> <strong>${loan.branch || 'NEGOMBO / NG'}</strong></div>
+            <div style="grid-column: span 2;"><span style="color:#888;">CBO & Group :</span> <strong>${loan.cbo || ''} || ${loan.group_code || 'G-1'}</strong></div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; width:80px; flex-shrink:0; border-left:1px solid #eee; padding-left:15px;">
+          <svg width="60" height="60" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+            <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#f0f2f5" stroke-width="3"/>
+            <text x="18" y="21" fill="#d93d59" font-size="8" font-weight="bold" text-anchor="middle" style="transform: rotate(90deg); transform-origin: 18px 18px;">0</text>
+          </svg>
+          <span style="font-size:9px; color:#888; margin-top:4px; font-weight:600; text-transform:uppercase;">Arrears Days</span>
+        </div>
+      </div>
+    `;
   }
 
   /* ══════════════════════════════════════
@@ -5000,7 +5203,6 @@
     // Register listeners
     const nmB = document.getElementById('nm-branch');
     const nmC = document.getElementById('nm-cbo');
-    const nmNic = document.getElementById('nm-search-nic');
     
     // Check if we already registered listeners to prevent duplicates
     if (!nmB.dataset.listenerRegistered) {
@@ -5011,70 +5213,107 @@
       nmC.addEventListener('change', loadNmCboMembers);
       nmC.dataset.listenerRegistered = 'true';
     }
-    if (!nmNic.dataset.listenerRegistered) {
-      nmNic.addEventListener('input', handleNicInputSuggestions);
-      nmNic.dataset.listenerRegistered = 'true';
-      
-      // Close dropdown when clicking elsewhere
-      document.addEventListener('click', function(e) {
-        if (e.target !== nmNic) {
-          document.getElementById('nm-nic-suggestions').style.display = 'none';
-        }
-      });
-    }
+
+    // Initialize autocomplete for New Micro Loans
+    initAutocompleteForFields('nm-search-nic', 'nm-search-name');
     
     clearLoanList();
     clearLoanSearch();
   }
 
-  function handleNicInputSuggestions() {
-    const nicInput = document.getElementById('nm-search-nic');
-    const val = nicInput.value.trim();
-    const suggestionsDiv = document.getElementById('nm-nic-suggestions');
-    const branch = document.getElementById('nm-branch').value;
+  function initAutocompleteForFields(nicInputId, nameInputId) {
+    const nicInput = document.getElementById(nicInputId);
+    const nameInput = document.getElementById(nameInputId);
+    if (!nicInput || !nameInput) return;
+    if (nicInput.dataset.autocompleteInitialized) return;
+    nicInput.dataset.autocompleteInitialized = 'true';
 
-    if (val.length < 2) {
-      suggestionsDiv.style.display = 'none';
-      suggestionsDiv.innerHTML = '';
-      return;
-    }
+    // Ensure parents have position: relative
+    if (nicInput.parentElement) nicInput.parentElement.style.position = 'relative';
+    if (nameInput.parentElement) nameInput.parentElement.style.position = 'relative';
 
-    let url = `/api/clients?keyword=${encodeURIComponent(val)}`;
-    if (branch) {
-      url += `&branch=${branch}`;
-    }
+    // Create suggestions divs
+    const nicSuggestions = document.createElement('div');
+    nicSuggestions.className = 'suggestions-dropdown';
+    nicSuggestions.style.display = 'none';
+    nicInput.parentNode.insertBefore(nicSuggestions, nicInput.nextSibling);
 
-    apiFetch(url)
-      .then(data => {
-        if (!data.success || !data.clients || data.clients.length === 0) {
-          suggestionsDiv.style.display = 'none';
-          suggestionsDiv.innerHTML = '';
-          return;
-        }
+    const nameSuggestions = document.createElement('div');
+    nameSuggestions.className = 'suggestions-dropdown';
+    nameSuggestions.style.display = 'none';
+    nameInput.parentNode.insertBefore(nameSuggestions, nameInput.nextSibling);
 
-        suggestionsDiv.innerHTML = '';
-        
-        // Limit to 5 suggestions
-        const list = data.clients.slice(0, 5);
-        list.forEach(client => {
-          const item = document.createElement('div');
-          item.className = 'suggestion-item';
-          item.innerHTML = `<strong>${client.nic}</strong> - ${client.full_name}`;
-          
-          item.addEventListener('click', function() {
-            document.getElementById('nm-search-nic').value = client.nic;
-            document.getElementById('nm-search-name').value = client.full_name;
-            suggestionsDiv.style.display = 'none';
+    const performSearch = (inputEl, sugEl, searchType) => {
+      const val = inputEl.value.trim();
+      if (val.length < 2) {
+        sugEl.style.display = 'none';
+        sugEl.innerHTML = '';
+        return;
+      }
+
+      // Dynamically resolve branch dropdown if any
+      const prefix = nicInputId.split('-')[0];
+      const branchEl = document.getElementById(`${prefix}-branch`);
+      const branch = branchEl ? branchEl.value : '';
+
+      let url = `/api/clients?keyword=${encodeURIComponent(val)}`;
+      if (branch && branch !== '--Select Branch--' && branch !== '-- Select Branch --') {
+        url += `&branch=${encodeURIComponent(branch)}`;
+      }
+
+      apiFetch(url)
+        .then(data => {
+          if (!data.success || !data.clients || data.clients.length === 0) {
+            sugEl.style.display = 'none';
+            sugEl.innerHTML = '';
+            return;
+          }
+
+          sugEl.innerHTML = '';
+          const list = data.clients.slice(0, 5);
+          list.forEach(client => {
+            const item = document.createElement('div');
+            item.className = 'suggestion-item';
+            
+            if (searchType === 'nic') {
+              item.innerHTML = `<strong>${client.nic}</strong> - ${client.full_name}`;
+            } else {
+              item.innerHTML = `<strong>${client.full_name}</strong> (${client.nic})`;
+            }
+
+            item.addEventListener('click', () => {
+              nicInput.value = client.nic;
+              nameInput.value = client.full_name;
+              nicSuggestions.style.display = 'none';
+              nameSuggestions.style.display = 'none';
+              
+              // Trigger input events in case other listeners need them
+              nicInput.dispatchEvent(new Event('input'));
+              nameInput.dispatchEvent(new Event('input'));
+              
+              // Custom hook for savings client details fetch
+              if (nicInputId === 'ns-nic' && typeof fetchClientForSavings === 'function') {
+                fetchClientForSavings();
+              }
+            });
+
+            sugEl.appendChild(item);
           });
-
-          suggestionsDiv.appendChild(item);
+          sugEl.style.display = 'block';
+        })
+        .catch(err => {
+          console.error('Autocomplete fetch error:', err);
         });
+    };
 
-        suggestionsDiv.style.display = 'block';
-      })
-      .catch(err => {
-        console.error('Error fetching suggestions:', err);
-      });
+    nicInput.addEventListener('input', () => performSearch(nicInput, nicSuggestions, 'nic'));
+    nameInput.addEventListener('input', () => performSearch(nameInput, nameSuggestions, 'name'));
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (e.target !== nicInput) nicSuggestions.style.display = 'none';
+      if (e.target !== nameInput) nameSuggestions.style.display = 'none';
+    });
   }
 
   function loadNmCboMembers() {
