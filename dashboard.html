@@ -3459,16 +3459,31 @@
     }
 
     // Charges Paid
-    const ctr = document.createElement('tr');
-    ctr.innerHTML = `
+    const loanAmt = parseFloat(loan.amount) || 0.0;
+    const insFee = loanAmt * 0.015;
+    const docFee = loanAmt * 0.035;
+
+    const ctr1 = document.createElement('tr');
+    ctr1.innerHTML = `
       <td>1</td>
-      <td>500.00</td>
+      <td>${insFee.toFixed(2)}</td>
       <td>${regDateStr}</td>
       <td>${loan.loan_no}</td>
-      <td>CHG/1748000004400-3176</td>
+      <td>INS/${loan.loan_no.replace(/\//g, '')}</td>
       <td>${(loan.credit_officer || 'leshan').toUpperCase()}</td>
     `;
-    chargesTbody.appendChild(ctr);
+    chargesTbody.appendChild(ctr1);
+
+    const ctr2 = document.createElement('tr');
+    ctr2.innerHTML = `
+      <td>2</td>
+      <td>${docFee.toFixed(2)}</td>
+      <td>${regDateStr}</td>
+      <td>${loan.loan_no}</td>
+      <td>DOC/${loan.loan_no.replace(/\//g, '')}</td>
+      <td>${(loan.credit_officer || 'leshan').toUpperCase()}</td>
+    `;
+    chargesTbody.appendChild(ctr2);
 
     // Contract Entries (Ledger)
     let etr = document.createElement('tr');
@@ -3490,13 +3505,28 @@
     etr.innerHTML = `
       <td>AM/RP-2025-${Math.floor(Math.random()*900)+100}</td>
       <td>${regDateStr}</td>
-      <td>System & Documentation Fee</td>
+      <td>Insurance Fee (1.5%)</td>
       <td>${loan.loan_no}</td>
       <td>-</td>
       <td>Cash Book</td>
       <td>Credit Officer Cash Book</td>
       <td>FEE_COLLECTION</td>
-      <td>500.00</td>
+      <td>${insFee.toFixed(2)}</td>
+      <td>0.00</td>
+    `;
+    entriesTbody.appendChild(etr);
+
+    etr = document.createElement('tr');
+    etr.innerHTML = `
+      <td>AM/RP-2025-${Math.floor(Math.random()*900)+100}</td>
+      <td>${regDateStr}</td>
+      <td>Documentation Fee (3.5%)</td>
+      <td>${loan.loan_no}</td>
+      <td>-</td>
+      <td>Cash Book</td>
+      <td>Credit Officer Cash Book</td>
+      <td>FEE_COLLECTION</td>
+      <td>${docFee.toFixed(2)}</td>
       <td>0.00</td>
     `;
     entriesTbody.appendChild(etr);
