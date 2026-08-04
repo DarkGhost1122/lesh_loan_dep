@@ -3427,11 +3427,12 @@
       scheduleTbody.appendChild(tr);
     }
 
-    // Only display payments, charges, and ledger entries for disbursed loans
-    if (loan.status !== 'Disbursed') {
-      paymentsTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:12px;color:#888;">Loan is not disbursed yet. No payments recorded.</td></tr>';
-      chargesTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:12px;color:#888;">Loan is not disbursed yet. No charges recorded.</td></tr>';
-      entriesTbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:12px;color:#888;">Loan is not disbursed yet. No ledger entries.</td></tr>';
+    // Only display payments, charges, and ledger entries for active/pending/approved/disbursed loans
+    const allowedStatuses = ['Pending', 'Approved', 'Disbursed', 'Active'];
+    if (!allowedStatuses.includes(loan.status)) {
+      paymentsTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:12px;color:#888;">Loan is in inactive status. No payments recorded.</td></tr>';
+      chargesTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:12px;color:#888;">Loan is in inactive status. No charges recorded.</td></tr>';
+      entriesTbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:12px;color:#888;">Loan is in inactive status. No ledger entries.</td></tr>';
       return;
     }
 
