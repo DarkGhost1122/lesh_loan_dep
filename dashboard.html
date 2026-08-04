@@ -3382,27 +3382,33 @@
     let currentDate = new Date(regDateStr);
     if (isNaN(currentDate.getTime())) currentDate = new Date('2025-05-22');
 
-    let accumulatedPaid = 0;
-    let paymentCount = 0;
-
+    // Generate schedule preview
     for (let i = 1; i <= tenor; i++) {
       currentDate.setDate(currentDate.getDate() + 7);
       const dateStr = currentDate.toISOString().split('T')[0];
 
       let schedulePaid = 0;
-      if (accumulatedPaid + installment <= paid) {
-        schedulePaid = installment;
-      } else if (accumulatedPaid < paid) {
-        schedulePaid = paid - accumulatedPaid;
+      if (loan.status === 'Disbursed') {
+        let accumulatedPaid = 0;
+        let testAccum = 0;
+        for (let j = 1; j <= i; j++) {
+          let p = 0;
+          if (testAccum + installment <= paid) {
+            p = installment;
+          } else if (testAccum < paid) {
+            p = paid - testAccum;
+          }
+          testAccum += p;
+          if (j === i) schedulePaid = p;
+        }
       }
-      accumulatedPaid += schedulePaid;
 
       const capitalPaid = Math.round(schedulePaid * 0.55);
       const interestPaid = Math.round(schedulePaid * 0.45);
       const capitalDue = Math.max(0, Math.round(installment * 0.55) - capitalPaid);
       const interestDue = Math.max(0, Math.round(installment * 0.45) - interestPaid);
       const totalDue = capitalDue + interestDue;
-      const isCompleted = schedulePaid >= installment ? `Yes / ${dateStr}` : 'No';
+      const isCompleted = (loan.status === 'Disbursed' && schedulePaid >= installment) ? `Yes / ${dateStr}` : 'No';
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -3415,9 +3421,36 @@
         <td>${capitalDue.toFixed(2)}</td>
         <td>${interestDue.toFixed(2)}</td>
         <td>${totalDue.toFixed(2)}</td>
-        <td style="color:${schedulePaid >= installment ? 'green' : 'red'}; font-weight:bold;">${isCompleted}</td>
+        <td style="color:${(loan.status === 'Disbursed' && schedulePaid >= installment) ? 'green' : 'red'}; font-weight:bold;">${isCompleted}</td>
       `;
       scheduleTbody.appendChild(tr);
+    }
+
+    // Only display payments, charges, and ledger entries for disbursed loans
+    if (loan.status !== 'Disbursed') {
+      paymentsTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:12px;color:#888;">Loan is not disbursed yet. No payments recorded.</td></tr>';
+      chargesTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:12px;color:#888;">Loan is not disbursed yet. No charges recorded.</td></tr>';
+      entriesTbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:12px;color:#888;">Loan is not disbursed yet. No ledger entries.</td></tr>';
+      return;
+    }
+
+    // Payments history
+    let paymentCount = 0;
+    currentDate = new Date(regDateStr);
+    if (isNaN(currentDate.getTime())) currentDate = new Date('2025-05-22');
+    let accumulatedPaid = 0;
+
+    for (let i = 1; i <= tenor; i++) {
+      currentDate.setDate(currentDate.getDate() + 7);
+      const dateStr = currentDate.toISOString().split('T')[0];
+
+      let schedulePaid = 0;
+      if (accumulatedPaid + installment <= paid) {
+        schedulePaid = installment;
+      } else if (accumulatedPaid < paid) {
+        schedulePaid = paid - accumulatedPaid;
+      }
+      accumulatedPaid += schedulePaid;
 
       if (schedulePaid > 0) {
         paymentCount++;
@@ -3434,6 +3467,7 @@
       }
     }
 
+    // Charges Paid
     const ctr = document.createElement('tr');
     ctr.innerHTML = `
       <td>1</td>
@@ -3445,6 +3479,7 @@
     `;
     chargesTbody.appendChild(ctr);
 
+    // Contract Entries (Ledger)
     let etr = document.createElement('tr');
     etr.innerHTML = `
       <td>AM/PV-2025-${Math.floor(Math.random()*900)+100}</td>
