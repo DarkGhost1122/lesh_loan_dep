@@ -1194,7 +1194,7 @@
                   <div style="flex: 1; max-width: 450px;">
                     <div class="inline-field" style="margin-bottom: 15px;">
                       <label style="font-weight: 600; display: block; margin-bottom: 6px;">Select Document Type :</label>
-                      <select id="co-doc-type" style="width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; outline: none; background: #fff;">
+                      <select id="co-doc-type" style="width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; outline: none; background: #fff;" onchange="filterDocumentsByType()">
                         <option value="CUSTOMER NIC">CUSTOMER NIC</option>
                         <option value="SPOUSE NIC">SPOUSE NIC</option>
                         <option value="MARRAGE CETIFICATE">MARRAGE CETIFICATE</option>
@@ -4613,7 +4613,7 @@
 
     renderBankAccountsTable(client.bank_accounts || []);
     renderFamilyTable(client.family_members || []);
-    renderDocumentsTable(client.documents || []);
+    filterDocumentsByType();
     toggleFamilyForm(false);
     loadOverviewContracts(client.id, client.nic);
 
@@ -4722,7 +4722,7 @@
       if (data.success) {
         alert('Document uploaded successfully!');
         if (currentOverviewClient) currentOverviewClient.documents = data.documents;
-        renderDocumentsTable(data.documents || []);
+        filterDocumentsByType();
         
         // Reset file input and selection state
         selectedDocBase64 = "";
@@ -4750,7 +4750,7 @@
       if (data.success) {
         alert('Document removed.');
         if (currentOverviewClient) currentOverviewClient.documents = data.documents;
-        renderDocumentsTable(data.documents || []);
+        filterDocumentsByType();
       } else {
         alert(data.message || 'Failed to remove document.');
       }
@@ -4760,14 +4760,31 @@
     });
   }
 
-  function renderDocumentsTable(documents) {
+  function filterDocumentsByType() {
     const tbody = document.getElementById('co-docs-tbody');
     if (!tbody) return;
-    if (!documents || documents.length === 0) {
+    if (!currentOverviewClient) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No client selected.</td></tr>';
+      return;
+    }
+    const selectedType = document.getElementById('co-doc-type').value;
+    const allDocs = currentOverviewClient.documents || [];
+    const filteredDocsWithIdx = allDocs
+      .map((doc, idx) => ({ doc, idx }))
+      .filter(item => item.doc.doc_type === selectedType);
+    renderDocumentsTable(filteredDocsWithIdx);
+  }
+
+  function renderDocumentsTable(filteredDocsWithIdx) {
+    const tbody = document.getElementById('co-docs-tbody');
+    if (!tbody) return;
+    if (!filteredDocsWithIdx || filteredDocsWithIdx.length === 0) {
       tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No uploaded files or documents found.</td></tr>';
       return;
     }
-    tbody.innerHTML = documents.map((doc, idx) => {
+    tbody.innerHTML = filteredDocsWithIdx.map((item) => {
+      const doc = item.doc;
+      const originalIdx = item.idx;
       const escape = (str) => {
         if (!str) return '';
         return str.toString()
@@ -4777,14 +4794,14 @@
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
       };
-      const viewerLink = `<a href="javascript:void(0)" onclick="openDocumentInNewTab(${idx})" style="color:#007bff; text-decoration:underline; cursor:pointer; font-weight:500;">${escape(doc.filename)}</a>`;
+      const viewerLink = `<a href="javascript:void(0)" onclick="openDocumentInNewTab(${originalIdx})" style="color:#007bff; text-decoration:underline; cursor:pointer; font-weight:500;">${escape(doc.filename)}</a>`;
       return `
         <tr>
           <td style="padding:12px 10px; border-bottom:1px solid #eee;">${escape(doc.doc_type)}</td>
           <td style="padding:12px 10px; border-bottom:1px solid #eee;">${escape(doc.submitted_at || '')}</td>
           <td style="padding:12px 10px; border-bottom:1px solid #eee;">${viewerLink}</td>
           <td style="padding:12px 10px; border-bottom:1px solid #eee; text-align:center;">
-            <button class="btn-inline-save" style="background-color:#d9534f; padding:4px 8px; font-size:11px; margin:0;" onclick="deleteClientDocument(${idx})">Remove</button>
+            <button class="btn-inline-save" style="background-color:#f0ad4e; color:#fff; border:none; padding:4px 8px; font-size:11px; margin:0; border-radius:4px; font-weight:600;" onclick="deleteClientDocument(${originalIdx})">Restricted</button>
           </td>
         </tr>
       `;
