@@ -576,6 +576,7 @@
                       <th>Loan No</th>
                       <th>Transaction No</th>
                       <th>User</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody id="ld-payments-tbody"></tbody>
@@ -3435,36 +3436,25 @@
     }
 
     // Payments history
-    let paymentCount = 0;
-    currentDate = new Date(regDateStr);
-    if (isNaN(currentDate.getTime())) currentDate = new Date('2025-05-22');
-    let accumulatedPaid = 0;
-
-    for (let i = 1; i <= tenor; i++) {
-      currentDate.setDate(currentDate.getDate() + 7);
-      const dateStr = currentDate.toISOString().split('T')[0];
-
-      let schedulePaid = 0;
-      if (accumulatedPaid + installment <= paid) {
-        schedulePaid = installment;
-      } else if (accumulatedPaid < paid) {
-        schedulePaid = paid - accumulatedPaid;
-      }
-      accumulatedPaid += schedulePaid;
-
-      if (schedulePaid > 0) {
-        paymentCount++;
+    const history = loan.payments_history || [];
+    if (history.length === 0) {
+      paymentsTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:12px;color:#888;">No payments recorded yet.</td></tr>';
+    } else {
+      history.forEach((pay, idx) => {
         const ptr = document.createElement('tr');
         ptr.innerHTML = `
-          <td>${paymentCount}</td>
-          <td>${schedulePaid.toFixed(2)}</td>
-          <td>${dateStr}</td>
+          <td>${idx + 1}</td>
+          <td>${parseFloat(pay.amount).toFixed(2)}</td>
+          <td>${pay.payment_date || ''}</td>
           <td>${loan.loan_no}</td>
-          <td>INST/1748430${100000 + i}</td>
-          <td>${(loan.credit_officer || 'leshan').toUpperCase()}</td>
+          <td>PAY/${pay.id.substring(pay.id.length - 8).toUpperCase()}</td>
+          <td>${(pay.collected_by || 'leshan').toUpperCase()}</td>
+          <td>
+            <button class="btn-inline-save" style="background-color:#d9534f; color:#fff; border:none; padding:4px 8px; font-size:11px; margin:0; border-radius:3px; font-weight:600;" onclick="reversePayment('${pay.id}', '${loan.loan_no}')">Reverse</button>
+          </td>
         `;
         paymentsTbody.appendChild(ptr);
-      }
+      });
     }
 
     // Charges Paid
@@ -3541,6 +3531,25 @@
         entriesTbody.appendChild(etr);
       }
     }
+  }
+
+  function reversePayment(paymentId, loanNo) {
+    if (!confirm('Are you sure you want to reverse/delete this payment? This will decrease the paid amount and update the loan balance.')) return;
+
+    apiFetch(`/api/payments/${paymentId}`, {
+      method: 'DELETE'
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Payment reversed successfully!');
+        showLoanDetails(loanNo); // refresh view
+      } else {
+        alert(data.message || 'Failed to reverse payment.');
+      }
+    })
+    .catch(err => {
+      alert('Error reversing payment: ' + err);
+    });
   }
 
   function navigateToClientOverview(clientNic) {
