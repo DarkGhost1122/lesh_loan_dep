@@ -499,8 +499,9 @@
         </div>
 
         <div id="loan-details-section" class="results-section" style="display:none; margin-top:20px; background:#fff; border:1px solid #ddd; border-radius:8px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-          <div class="results-title" style="margin-bottom:15px; border-bottom:2px solid var(--topbar-accent); padding-bottom:8px; color:var(--topbar-accent);">
-            Loan Details - <span id="ld-loan-no-title">AM/MF/004/11928</span>
+          <div class="results-title" style="margin-bottom:15px; border-bottom:2px solid var(--topbar-accent); padding-bottom:8px; color:var(--topbar-accent); display:flex; justify-content:space-between; align-items:center;">
+            <span>Loan Details - <span id="ld-loan-no-title">AM/MF/004/11928</span></span>
+            <button class="btn btn-red" id="btn-delete-loan" style="background:#d9534f; border-color:#d9534f; font-size:12px; padding:4px 12px; margin:0;" onclick="deleteCurrentLoan()">Delete Loan</button>
           </div>
 
           <!-- Info Grid -->
@@ -3308,6 +3309,7 @@
         alert('Loan not found.');
         return;
       }
+      window.currentActiveLoanId = loan.id;
 
       // Fetch client info for client name, nic, mobile
       apiFetch(`/api/clients/${loan.client_id}`)
@@ -3607,6 +3609,37 @@
     })
     .catch(err => {
       alert('Error reversing payment: ' + err);
+    });
+  }
+
+  function deleteCurrentLoan() {
+    const loanId = window.currentActiveLoanId;
+    if (!loanId) {
+      alert('No active loan selected.');
+      return;
+    }
+    if (!confirm('Warning: Are you sure you want to permanently delete this loan? This will delete the loan document and all payments associated with this loan. This action cannot be undone!')) {
+      return;
+    }
+
+    apiFetch(`/api/loans/${loanId}`, {
+      method: 'DELETE'
+    })
+    .then(data => {
+      if (data.success) {
+        alert('Loan deleted successfully!');
+        // Hide details view
+        document.getElementById('loan-details-section').style.display = 'none';
+        // Refresh loans table by executing search again
+        if (typeof selectLoan === 'function') {
+          selectLoan();
+        }
+      } else {
+        alert(data.message || 'Failed to delete loan.');
+      }
+    })
+    .catch(err => {
+      alert('Error deleting loan: ' + err);
     });
   }
 
