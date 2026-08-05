@@ -1164,6 +1164,10 @@
                       <option value="Other">Other</option>
                     </select>
                   </div>
+                  <div class="inline-field" style="flex:1.5;">
+                    <label>Member ID / NIC</label>
+                    <input type="text" id="co-family-id" placeholder="NIC / ID" style="height:32px; border:1px solid #ccc; border-radius:3px; padding:0 8px; width:100%;" />
+                  </div>
                   <div style="display:flex; gap:10px;">
                     <button class="btn btn-green" onclick="saveFamilyMember()" style="height:32px;">Save</button>
                     <button class="btn btn-grey" onclick="toggleFamilyForm(false)" style="height:32px;">Cancel</button>
@@ -1180,11 +1184,12 @@
                       <tr>
                         <th>Member Name</th>
                         <th>Relationship</th>
+                        <th>Member ID / NIC</th>
                         <th style="width:100px; text-align:center;">Action</th>
                       </tr>
                     </thead>
                     <tbody id="co-family-tbody">
-                      <tr><td colspan="3" style="text-align:center;padding:12px;color:#888;">No family detail records found for this client.</td></tr>
+                      <tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No family detail records found for this client.</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -3320,6 +3325,8 @@
             document.getElementById('ld-guarantor-name').textContent = 'N/A';
             document.getElementById('ld-guarantor-nic').textContent = 'N/A';
           }
+          // Populate group code dynamically from client document
+          document.getElementById('ld-group').textContent = client.group_code || 'No Group';
         })
         .catch(err => {
           console.error('Error fetching client for loan details:', err);
@@ -3331,7 +3338,7 @@
       document.getElementById('ld-loan-no-title').textContent = loan.loan_no;
       document.getElementById('ld-branch').textContent = `${loan.branch || 'ANAMADUWA'} | ${loan.branch === 'ANAMADUWA' ? 'AM' : 'CO'}`;
       document.getElementById('ld-cbo').textContent = loan.cbo || 'N/A';
-      document.getElementById('ld-group').textContent = loan.group_code || 'G-4';
+      document.getElementById('ld-group').textContent = 'Loading...';
       
       const amount = parseFloat(loan.amount) || 0;
       const tenor = parseInt(loan.tenor) || 24;
@@ -3349,7 +3356,7 @@
       document.getElementById('ld-agreed').textContent = `LKR ${(payback).toLocaleString('en-US', {minimumFractionDigits:2})}`;
       
       // Arrears & Ages calculation
-      const arrears = paid < payback ? Math.max(0, payback - paid - 500) : 0;
+      const arrears = paid < payback ? Math.max(0, payback - paid) : 0;
       document.getElementById('ld-arrears').textContent = `LKR ${(arrears).toLocaleString('en-US', {minimumFractionDigits:2})}`;
       document.getElementById('ld-paid').textContent = `LKR ${(paid).toLocaleString('en-US', {minimumFractionDigits:2})}`;
       document.getElementById('ld-officer').textContent = (loan.credit_officer || 'leshan').toUpperCase();
@@ -5008,6 +5015,7 @@
       btnRow.style.display = 'none';
       document.getElementById('co-family-name').value = '';
       document.getElementById('co-family-rel').value = 'Spouse';
+      document.getElementById('co-family-id').value = '';
     } else {
       form.style.display = 'none';
       btnRow.style.display = 'block';
@@ -5018,7 +5026,7 @@
     const tbody = document.getElementById('co-family-tbody');
     tbody.innerHTML = '';
     if (!members || members.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:12px;color:#888;">No family detail records found for this client.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:12px;color:#888;">No family detail records found for this client.</td></tr>';
       return;
     }
     members.forEach((m, idx) => {
@@ -5026,6 +5034,7 @@
       tr.innerHTML = `
         <td>${m.member_name}</td>
         <td>${m.relationship}</td>
+        <td>${m.member_id || ''}</td>
         <td style="text-align:center;"><button class="btn-delete-bank" onclick="deleteFamilyMember(${idx})">Delete</button></td>
       `;
       tbody.appendChild(tr);
@@ -5038,6 +5047,7 @@
 
     const name = document.getElementById('co-family-name').value.trim();
     const rel = document.getElementById('co-family-rel').value;
+    const memberId = document.getElementById('co-family-id').value.trim();
 
     if (!name) {
       alert('Please enter family member name.');
@@ -5046,7 +5056,7 @@
 
     apiFetch(`/api/clients/${clientId}/family-members`, {
       method: 'POST',
-      body: JSON.stringify({ member_name: name, relationship: rel })
+      body: JSON.stringify({ member_name: name, relationship: rel, member_id: memberId })
     })
     .then(data => {
       if (data.success) {
@@ -5142,12 +5152,20 @@
     const progressFormatted = progressPercent.toFixed(2);
     const dashArray = `${progressFormatted}, 100`;
 
-    const displayStatus = loan.status === 'Settled' || loan.status === 'Completed' ? 'Completed' : 'Disbursed';
+    let statusColor = '#f0ad4e'; // default warning orange
+    if (loan.status === 'Settled' || loan.status === 'Completed' || loan.status === 'Disbursed' || loan.status === 'Active') {
+      statusColor = '#28a745'; // green
+    } else if (loan.status === 'Sent Back' || loan.status === 'Rejected') {
+      statusColor = '#d9534f'; // red
+    }
+    const displayStatus = loan.status || 'Disbursed';
     const performStatus = loan.status === 'Settled' || loan.status === 'Completed' ? 'Completed' : 'Performing Loan';
 
     const clientNameLabel = isGuaranteed 
       ? `<div><span style="color:#888;">Debtor Name :</span> <a href="#" onclick="navigateToClientOverview('${loan.nic || loan.client_nic || ''}'); return false;" style="color:#2b3a5c; font-weight:bold; text-decoration:underline;">${loan.client_name || ''}</a></div>`
       : '';
+
+    const grpCode = (isGuaranteed ? (loan.group_code || 'No Group') : (typeof currentOverviewClient !== 'undefined' && currentOverviewClient ? currentOverviewClient.group_code : (loan.group_code || 'No Group')));
 
     return `
       <div class="contract-card" style="display:flex; align-items:center; background:#fff; border:1px solid #ddd; border-radius:8px; padding:15px; gap:20px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:10px;">
@@ -5170,10 +5188,10 @@
             <div><span style="color:#888;">Tenner :</span> <strong>${tenor}</strong></div>
             <div><span style="color:#888;">Compounding Frequency :</span> <strong>Weekly</strong></div>
             <div><span style="color:#888;">Registered :</span> <strong>${loan.reg_date || 'N/A'}</strong></div>
-            <div><span style="color:#888;">Loan Status :</span> <strong style="color:${displayStatus==='Completed'?'#28a745':'#f0ad4e'};">${displayStatus}</strong></div>
+            <div><span style="color:#888;">Loan Status :</span> <strong style="color:${statusColor};">${displayStatus}</strong></div>
             <div style="grid-column: span 2;"><span style="color:#888;">Loan Performing Status :</span> <strong style="color:#28a745;">${performStatus}</strong></div>
             <div style="grid-column: span 2;"><span style="color:#888;">Branch :</span> <strong>${loan.branch || 'NEGOMBO / NG'}</strong></div>
-            <div style="grid-column: span 2;"><span style="color:#888;">CBO & Group :</span> <strong>${loan.cbo || ''} || ${loan.group_code || 'G-1'}</strong></div>
+            <div style="grid-column: span 2;"><span style="color:#888;">CBO & Group :</span> <strong>${loan.cbo || ''} || ${grpCode || 'No Group'}</strong></div>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; align-items:center; width:80px; flex-shrink:0; border-left:1px solid #eee; padding-left:15px;">
@@ -6145,6 +6163,8 @@
         <td>
           <select class="nm-prod-select" onchange="updateNmRowProduct(${idx}, this.value)" style="height:30px;font-size:12px;border:1px solid #ccc;border-radius:3px;background:white;color:black;">
             <option value="">Select Loan Product</option>
+            <option value="MF 10000">MF 10000</option>
+            <option value="MF 15000">MF 15000</option>
             <option value="MF 01 35000">MF 01 35000</option>
             <option value="MF 01 40000">MF 01 40000</option>
             <option value="MF 02 50000">MF 02 50000</option>
@@ -6182,7 +6202,9 @@
     let amt = 0;
     let tenor = 0;
 
-    if (prodValue === 'MF 01 35000') { amt = 35000; tenor = 20; }
+    if (prodValue === 'MF 10000') { amt = 10000; tenor = 12; }
+    else if (prodValue === 'MF 15000') { amt = 15000; tenor = 16; }
+    else if (prodValue === 'MF 01 35000') { amt = 35000; tenor = 20; }
     else if (prodValue === 'MF 01 40000') { amt = 40000; tenor = 24; }
     else if (prodValue === 'MF 02 50000') { amt = 50000; tenor = 28; }
     else if (prodValue === 'MF 03 60000') { amt = 60000; tenor = 30; }
@@ -6329,7 +6351,7 @@
     const tbody = document.getElementById('matrix-tbody');
     tbody.innerHTML = '';
 
-    const principals = [40000, 50000, 60000, 70000, 80000, 90000, 100000];
+    const principals = [10000, 15000, 40000, 50000, 60000, 70000, 80000, 90000, 100000];
     const terms = [20, 24, 28, 30, 32];
 
     principals.forEach(principal => {
