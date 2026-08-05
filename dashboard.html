@@ -3249,6 +3249,14 @@
           tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:16px;color:#888;">No loans found.</td></tr>';
         } else {
           loans.forEach(loan => {
+            let statusColor = '#7f8c8d';
+            if (loan.status === 'Active' || loan.status === 'Disbursed' || loan.status === 'Settled' || loan.status === 'Completed') {
+              statusColor = '#27ae60';
+            } else if (loan.status === 'Pending' || loan.status === 'Approved') {
+              statusColor = '#e67e22';
+            } else if (loan.status === 'Sent Back' || loan.status === 'Rejected') {
+              statusColor = '#c0392b';
+            }
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${loan.branch || ''}</td>
@@ -3257,7 +3265,7 @@
               <td>${loan.client_nic || ''}</td>
               <td>${parseFloat(loan.amount || 0).toFixed(2)}</td>
               <td>${loan.loan_type || ''}</td>
-              <td>${loan.status || ''}</td>
+              <td style="color:${statusColor}; font-weight:bold;">${loan.status || ''}</td>
               <td>${loan.credit_officer || ''}</td>
               <td>${loan.disbursement_date || ''}</td>
               <td><button class="btn-select" onclick="showLoanDetails('${loan.loan_no}')">View</button></td>
@@ -3360,7 +3368,17 @@
       document.getElementById('ld-arrears').textContent = `LKR ${(arrears).toLocaleString('en-US', {minimumFractionDigits:2})}`;
       document.getElementById('ld-paid').textContent = `LKR ${(paid).toLocaleString('en-US', {minimumFractionDigits:2})}`;
       document.getElementById('ld-officer').textContent = (loan.credit_officer || 'leshan').toUpperCase();
-      document.getElementById('ld-status').textContent = loan.status;
+      const statusEl = document.getElementById('ld-status');
+      statusEl.textContent = loan.status;
+      if (loan.status === 'Active' || loan.status === 'Disbursed' || loan.status === 'Settled' || loan.status === 'Completed') {
+        statusEl.style.color = '#27ae60'; // Green
+      } else if (loan.status === 'Pending' || loan.status === 'Approved') {
+        statusEl.style.color = '#e67e22'; // Orange
+      } else if (loan.status === 'Sent Back' || loan.status === 'Rejected') {
+        statusEl.style.color = '#c0392b'; // Red
+      } else {
+        statusEl.style.color = '#7f8c8d'; // Grey
+      }
 
       // Populate schedule, payments, and entries
       generateLoanScheduleAndLedger(loan, installment, payback);
@@ -3396,8 +3414,8 @@
       const dateStr = currentDate.toISOString().split('T')[0];
 
       let schedulePaid = 0;
-      if (loan.status === 'Disbursed') {
-        let accumulatedPaid = 0;
+      const isStatusEligible = ['Disbursed', 'Active', 'Pending', 'Approved', 'Settled', 'Completed'].includes(loan.status);
+      if (isStatusEligible) {
         let testAccum = 0;
         for (let j = 1; j <= i; j++) {
           let p = 0;
@@ -3416,7 +3434,9 @@
       const capitalDue = Math.max(0, Math.round(installment * 0.55) - capitalPaid);
       const interestDue = Math.max(0, Math.round(installment * 0.45) - interestPaid);
       const totalDue = capitalDue + interestDue;
-      const isCompleted = (loan.status === 'Disbursed' && schedulePaid >= installment) ? `Yes / ${dateStr}` : 'No';
+      
+      const hasPaidInstallment = schedulePaid >= (installment - 2);
+      const isCompleted = (isStatusEligible && hasPaidInstallment) ? `Yes / ${dateStr}` : 'No';
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -3429,7 +3449,7 @@
         <td>${capitalDue.toFixed(2)}</td>
         <td>${interestDue.toFixed(2)}</td>
         <td>${totalDue.toFixed(2)}</td>
-        <td style="color:${(loan.status === 'Disbursed' && schedulePaid >= installment) ? 'green' : 'red'}; font-weight:bold;">${isCompleted}</td>
+        <td style="color:${(isStatusEligible && hasPaidInstallment) ? 'green' : 'red'}; font-weight:bold;">${isCompleted}</td>
       `;
       scheduleTbody.appendChild(tr);
     }
