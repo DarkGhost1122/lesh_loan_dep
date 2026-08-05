@@ -3352,7 +3352,12 @@
       
       const amount = parseFloat(loan.amount) || 0;
       const tenor = parseInt(loan.tenor) || 24;
-      const payback = amount + (amount * 0.0155 * tenor);
+      let payback = amount + (amount * 0.0155 * tenor);
+      if (amount === 10000 && tenor === 13) {
+        payback = 12600;
+      } else if (amount === 15000 && tenor === 13) {
+        payback = 19000;
+      }
       const installment = Math.round(payback / tenor);
       const paid = parseFloat(loan.paid_amount) || 0;
       const outstanding = Math.max(0, payback - paid);
@@ -3489,8 +3494,16 @@
 
     // Charges Paid
     const loanAmt = parseFloat(loan.amount) || 0.0;
-    const insFee = loanAmt * 0.015;
-    const docFee = loanAmt * 0.035;
+    const tenorVal = parseInt(loan.tenor) || 24;
+    let insFee = loanAmt * 0.015;
+    let docFee = loanAmt * 0.035;
+    
+    // Dynamic override for 10k/15k loans with 13-week tenor
+    const isSpecialLoan = (loanAmt === 10000 || loanAmt === 15000) && tenorVal === 13;
+    if (isSpecialLoan) {
+      insFee = 90.00;
+      docFee = 210.00;
+    }
 
     const ctr1 = document.createElement('tr');
     ctr1.innerHTML = `
@@ -3534,7 +3547,7 @@
     etr.innerHTML = `
       <td>AM/RP-2025-${Math.floor(Math.random()*900)+100}</td>
       <td>${regDateStr}</td>
-      <td>Insurance Fee (1.5%)</td>
+      <td>Insurance Fee ${isSpecialLoan ? '' : '(1.5%)'}</td>
       <td>${loan.loan_no}</td>
       <td>-</td>
       <td>Cash Book</td>
@@ -3549,7 +3562,7 @@
     etr.innerHTML = `
       <td>AM/RP-2025-${Math.floor(Math.random()*900)+100}</td>
       <td>${regDateStr}</td>
-      <td>Documentation Fee (3.5%)</td>
+      <td>Documentation Fee ${isSpecialLoan ? '' : '(3.5%)'}</td>
       <td>${loan.loan_no}</td>
       <td>-</td>
       <td>Cash Book</td>
@@ -5198,7 +5211,12 @@
     const amount = parseFloat(loan.amount) || 0.0;
     const paid = parseFloat(loan.paid_amount) || 0.0;
     const tenor = parseInt(loan.tenor) || 24;
-    const payback = amount + (amount * 0.0155 * tenor);
+    let payback = amount + (amount * 0.0155 * tenor);
+    if (amount === 10000 && tenor === 13) {
+      payback = 12600;
+    } else if (amount === 15000 && tenor === 13) {
+      payback = 19000;
+    }
     const installment = Math.round(payback / tenor);
 
     const progressPercent = payback > 0 ? Math.min(100, Math.max(0, (paid / payback) * 100)) : 0;
@@ -6405,7 +6423,7 @@
     tbody.innerHTML = '';
 
     const principals = [10000, 15000, 40000, 50000, 60000, 70000, 80000, 90000, 100000];
-    const terms = [20, 24, 28, 30, 32];
+    const terms = [13, 20, 24, 28, 30, 32];
 
     principals.forEach(principal => {
       // Group header
@@ -6419,8 +6437,15 @@
       terms.forEach(weeks => {
         const tr = document.createElement('tr');
         
-        const interest = principal * 0.0155 * weeks;
-        const payback = principal + interest;
+        let interest = principal * 0.0155 * weeks;
+        let payback = principal + interest;
+        if (principal === 10000 && weeks === 13) {
+          payback = 12600;
+          interest = 2600;
+        } else if (principal === 15000 && weeks === 13) {
+          payback = 19000;
+          interest = 4000;
+        }
         const installment = Math.round(payback / weeks);
 
         tr.innerHTML = `
@@ -6467,8 +6492,15 @@
     const principal = parseFloat(amtNum.value) || 0;
     const weeks = parseInt(weeksSlider.value) || 0;
 
-    const interest = principal * 0.0155 * weeks;
-    const payback = principal + interest;
+    let interest = principal * 0.0155 * weeks;
+    let payback = principal + interest;
+    if (principal === 10000 && weeks === 13) {
+      payback = 12600;
+      interest = 2600;
+    } else if (principal === 15000 && weeks === 13) {
+      payback = 19000;
+      interest = 4000;
+    }
     const installment = weeks > 0 ? Math.round(payback / weeks) : 0;
 
     document.getElementById('calc-out-weekly').textContent = `LKR ${installment.toLocaleString('en-US')}`;
